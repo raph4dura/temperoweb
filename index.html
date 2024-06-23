@@ -23,12 +23,12 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        .foods-list, .added-foods {
+        .foods-list {
             flex: 0.50;
             padding: 20px;
         }
 
-        .foods-list h2, .added-foods h2 {
+        .foods-list h2 {
             margin-top: 0.50;
         }
 
@@ -49,8 +49,22 @@
             background-color: #e0e0e0;
         }
 
+        .added-foods-container {
+            position: fixed;
+            top: 20px;
+            right: 80px;
+            bottom: 20px;
+            width: 300px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+
         .added-foods {
-            max-width: 300px;
+            padding: 20px;
         }
 
         .item-row {
@@ -89,6 +103,7 @@
         <div class="foods-list">
             <h2>Lista de Alimentos</h2>
             <ul id="foods">
+                <!-- Lista de alimentos aqui -->
                 <h2>NATURAIS</h2><p></p>
                 <li>Açucar Mascavo 1kg</li>
                 <li>Açucar Mascavo 500g</li>
@@ -285,17 +300,21 @@
                 </li>
             </ul>
         </div>
-        <div class="added-foods">
-            <h2>Alimentos Adicionados</h2>
-            <div id="addedFoodsList">
-                <!-- Itens adicionados serão inseridos aqui -->
-            </div>
+    </div>
+
+    <!-- Janela de alimentos adicionados -->
+    <div class="added-foods-container" id="addedFoodsContainer">
+        <div class="added-foods" id="addedFoodsList">
+            <h2>Alimentos Adicionados</h2><ul id="foods">
+            <!-- Itens adicionados serão inseridos aqui -->
+         </ul>   
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const foodsList = document.getElementById('foods');
+            const addedFoodsContainer = document.getElementById('addedFoodsContainer');
             const addedFoodsList = document.getElementById('addedFoodsList');
 
             // Adicionar evento de clique aos itens da lista de alimentos
@@ -327,6 +346,9 @@
                         `;
                         addedFoodsList.appendChild(newItem);
                     }
+
+                    // Mostrar a janela de alimentos adicionados
+                    addedFoodsContainer.style.display = 'block';
                 }
             });
 
