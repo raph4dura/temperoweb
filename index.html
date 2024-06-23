@@ -10,10 +10,6 @@
             margin: 0;
             padding: 0;
             background-color: #f0f0f0;
-            display: flex;
-            justify-content: center; /* Centraliza o conteúdo na tela */
-            align-items: flex-start; /* Alinha os itens ao topo */
-            min-height: 100vh; /* Garante que a página ocupe pelo menos toda a altura da viewport */
         }
 
         .container {
@@ -25,16 +21,15 @@
             padding: 20px;
             border-radius: 80px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: relative; /* Posição relativa para .container */
         }
 
         .foods-list, .added-foods {
-            flex: 0.45; /* Diminui a largura para acomodar melhor na tela */
+            flex: 0.50;
             padding: 20px;
         }
 
         .foods-list h2, .added-foods h2 {
-            margin-top: 0;
+            margin-top: 0.50;
         }
 
         ul {
@@ -56,10 +51,6 @@
 
         .added-foods {
             max-width: 300px;
-            position: sticky; /* Fixa a posição do lado direito */
-            top: 20px; /* Distância do topo da tela */
-            height: calc(100vh - 80px); /* Altura igual à altura da tela - margens */
-            overflow-y: auto; /* Adiciona barra de rolagem vertical se necessário */
         }
 
         .item-row {
@@ -307,29 +298,13 @@
             const foodsList = document.getElementById('foods');
             const addedFoodsList = document.getElementById('addedFoodsList');
 
-            // Armazenar categorias e contadores para manter a ordem
-            const categories = ['Natural', 'Molho', 'Tag'];
-            const categoryIndexes = {}; // Índices para controlar a posição de cada categoria
-            categories.forEach((category, index) => {
-                categoryIndexes[category] = index;
-            });
-
             // Adicionar evento de clique aos itens da lista de alimentos
             foodsList.addEventListener('click', function(event) {
                 if (event.target.tagName === 'LI') {
-                    const foodName = event.target.textContent.trim(); // Remove espaços em branco extras
-
-                    // Verificar a categoria do alimento
-                    let category = null;
-                    for (let i = 0; i < categories.length; i++) {
-                        if (foodName.toUpperCase().includes(categories[i].toUpperCase())) {
-                            category = categories[i];
-                            break;
-                        }
-                    }
+                    const foodName = event.target.textContent;
 
                     // Verificar se o alimento já foi adicionado
-                    const itemAlreadyAdded = addedFoodsList.querySelector([data-name="${foodName}"]);
+                    const itemAlreadyAdded = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
                     if (itemAlreadyAdded) {
                         const itemCountSpan = itemAlreadyAdded.querySelector('.item-count');
                         let itemCount = parseInt(itemCountSpan.textContent);
@@ -340,7 +315,7 @@
                         const newItem = document.createElement('div');
                         newItem.classList.add('item-row');
                         newItem.setAttribute('data-name', foodName);
-                        newItem.innerHTML = 
+                        newItem.innerHTML = `
                             <div class="item-name">${foodName}</div>
                             <div class="btn-container">
                                 <button class="btn" onclick="removeItems('${foodName}', 6)">-6</button>
@@ -349,43 +324,15 @@
                                 <button class="btn" onclick="addMoreItems('${foodName}', 1)">+1</button>
                                 <button class="btn" onclick="addMoreItems('${foodName}', 6)">+6</button>
                             </div>
-                        ;
-
-                        // Encontrar a posição correta para inserir o novo item
-                        let insertBeforeElement = null;
-                        const currentItems = addedFoodsList.querySelectorAll('.item-row');
-                        for (let i = 0; i < currentItems.length; i++) {
-                            const itemName = currentItems[i].getAttribute('data-name');
-                            const itemCategory = getCategory(itemName);
-                            if (categoryIndexes[itemCategory] > categoryIndexes[category]) {
-                                insertBeforeElement = currentItems[i];
-                                break;
-                            }
-                        }
-
-                        // Inserir o novo item na posição correta
-                        if (insertBeforeElement) {
-                            addedFoodsList.insertBefore(newItem, insertBeforeElement);
-                        } else {
-                            addedFoodsList.appendChild(newItem);
-                        }
+                        `;
+                        addedFoodsList.appendChild(newItem);
                     }
                 }
             });
 
-            // Função para obter a categoria de um alimento
-            function getCategory(foodName) {
-                for (let i = 0; i < categories.length; i++) {
-                    if (foodName.toUpperCase().includes(categories[i].toUpperCase())) {
-                        return categories[i];
-                    }
-                }
-                return null;
-            }
-
             // Função para adicionar mais itens de um mesmo tipo
             window.addMoreItems = function(foodName, count) {
-                const item = addedFoodsList.querySelector([data-name="${foodName}"]);
+                const item = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
                 const itemCountSpan = item.querySelector('.item-count');
                 let itemCount = parseInt(itemCountSpan.textContent);
                 itemCount += count;
@@ -394,7 +341,7 @@
 
             // Função para remover itens de um mesmo tipo
             window.removeItems = function(foodName, count) {
-                const item = addedFoodsList.querySelector([data-name="${foodName}"]);
+                const item = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
                 const itemCountSpan = item.querySelector('.item-count');
                 let itemCount = parseInt(itemCountSpan.textContent);
                 itemCount -= count;
