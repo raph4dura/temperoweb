@@ -1,39 +1,410 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro - Temperos Incríveis</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Alimentos Naturais</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center; /* Centraliza o conteúdo na tela */
+            align-items: flex-start; /* Alinha os itens ao topo */
+            min-height: 100vh; /* Garante que a página ocupe pelo menos toda a altura da viewport */
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 80px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative; /* Posição relativa para .container */
+        }
+
+        .foods-list, .added-foods {
+            flex: 0.45; /* Diminui a largura para acomodar melhor na tela */
+            padding: 20px;
+        }
+
+        .foods-list h2, .added-foods h2 {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            margin-bottom: 8px;
+        }
+
+        li:hover {
+            background-color: #e0e0e0;
+        }
+
+        .added-foods {
+            max-width: 300px;
+            position: sticky; /* Fixa a posição do lado direito */
+            top: 20px; /* Distância do topo da tela */
+            height: calc(100vh - 80px); /* Altura igual à altura da tela - margens */
+            overflow-y: auto; /* Adiciona barra de rolagem vertical se necessário */
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .item-name {
+            flex: 1;
+        }
+
+        .btn-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-
-<header>
-  <nav>
     <div class="container">
-      <h1>Temperos Incríveis</h1>
+        <div class="foods-list">
+            <h2>Lista de Alimentos</h2>
+            <ul id="foods">
+                <h2>NATURAIS</h2><p></p>
+                <li>Açucar Mascavo 1kg</li>
+                <li>Açucar Mascavo 500g</li>
+                <li>Anéis de Frutas 120g</li>
+                <li>Aveia em Flocos Finos 250g</li>
+                <li>Aveia em Flocos Grossos 250g</li>
+                <li>Cacau em Pó 100g</li>
+                <li>Chocoboll 220g</li>
+                <li>Farelo de Aveia 250g</li>
+                <li>Farinha de Aveia 250g</li>    
+                <li>Farinha de Arroz Branca 500g</li>
+                <li>Farinha de Banana Verde 100g</li>    
+                <li>Farinha de Berinjela 100g</li>
+                <li>Farinha de Centeio 500g</li>
+                <li>Farinha de Linhaça Dourada 220g</li>
+                <li>Farinha de Linhaça Marrom 250g</li>
+                <li>Farinha de Maracujá 250g</li>
+                <li>Farinha de Soja 250g</li>
+                <li>Farinha de Trigo Integral 500g</li>
+                <li>Flocos de Arroz 150g</li>
+                <li>Flocos de Milho com Açucar 150g</li>
+                <li>Flocos de Milho Natural 150g</li>
+                <li>Gergelim Descascado</li>
+                <li>Gérmen de Trigo 250g</li>
+                <li>Granola com Adoçante Diet 1kg</li>
+                <li>Granola com Adoçante Diet 250g</li>
+                <li>Granola com Canela 250g</li>
+                <li>Granola com Côco 1kg</li>
+                <li>Granola com Côco 250g</li>
+                <li>Granola Natural Light 1kg</li>
+                <li>Granola Natural Light 250g</li>
+                <li>Granola Docemel 1kg</li>
+                <li>Granola Docemel 250g</li>
+                <li>Granola Tradicional 1kg</li>
+                <li>Granola Tradicional 250g</li>
+                <li>Proteína de Soja Escura 250g</li>
+                <li>Proteína de Soja Graúda 250g</li>
+                <li>Proteína de Soja Miúda Clara 250g</li>
+                <li>Ameixa Preta sem Caroço 100g</li>
+                <li>Ameixa Preta com Caroço 100g</li>
+                <li>Ameixa sem Caroço POTE</li>
+                <li>Ameixa com Caroço POTE</li>
+                <li>Frutas Cristalizadas Sachê</li>
+                <li>Frutas Cristalizadas POTE</li>
+                <li>Tag Ameixa Preta sem Caroço</li>
+                <li>Tag Ameixa Preta com Caroço</li>
+                <li>Tag Uva Passa Preta</li>
+                <li>Uva Passa Preta Sachê</li>
+                <li>Uva Passa Branca Sachê</li>
+                <li>Uva Passa Preta POTE</li>
+                <li>Uva Passa Branca POTE</li>
+                <li>Côco Seco Ralado Grosso 100g</li>
+                <li>Côco Seco Ralado Fino 100g</li>
+                <li>Côco Seco Ralado Adoçado 100g</li>
+                <li>Semente de Chia 100g</li>
+                <li>Quinoa em Flocos 100g</li>
+                <li>Quinoa em Grãos 100g</li>
+                <li>Levedo de Cerveja</li>
+                <li>Semente de Girassol 100g</li>
+                <li>Semente de Linhaça Dourada 200g</li>
+                <li>Semente de Linhaça Marrom 250g</li>
+                <li>Soja em Grão 500g</li>
+                <li>Trigo em Grão 500g</li>
+                <li>Alho com Ervas Finas 190g pote</li>
+                <li>Alho com Orégano 190g pote</li>
+                <li>Alho, Cebola e Salsa 190g pote</li>
+                <li>Alho Picado 190g</li>
+                <li>Alho Picado 1kg</li>
+                <li>Alho em Pasta 190g</li>
+                <li>Alho em Pasta 1kg</li>
+                <li>Alho, Salsa e Páprica 190g pote</li><p></p>
+                <h2>MOLHOS</h2><p></p>
+                <li>Molho de Alho 150ml</li>
+                <li>Molho de Alho 900ml</li>
+                <li>Molho de Pimenta 150ml</li>
+                <li>Molho de Pimenta 900ml</li>
+                <li>Molho de Pimenta Malagueta 70g</li>
+                <li>Molho de Cebola Defumada 150ml</li>
+                <li>Molho de Cebola Defumada 900ml</li>
+                <li>Molho Inglês 150ml</li>
+                <li>Molho Inglês 900ml</li>
+                <li>Molho Shoyu 150ml</li>
+                <li>Molho Shoyu 900ml</li>
+                <li>Molho de Pimenta Defumada 150ml</li><p></p>
+                <h2>SAIS</h2><p></p>
+                <li>Sal Marinho 1kg</li>
+                <li>Sal Completo sem Pimenta 500g</li>
+                <li>Sal Completo com Pimenta 500g</li>
+                <li>Sal para Churrasco sem Pimenta 1kg</li>
+                <li>Sal para Churrasco com Pimenta 1kg</li>
+                <li>Sal para Churrasco 500g</li>
+                <li>Sal para Galeto sem Pimenta 1kg</li>
+                <li>Sal para Galeto sem Pimenta 500g</li>
+                <li>Sal para Galeto com Pimenta 500g</li>
+                <li>Tempero Alho e Sal 1,01kg</li>
+                <li>Tempero Completo com Pimenta 1,01kg</li>
+                <li>Tempero Completo sem Pimenta 1,01kg</li>
+                <li>Tempero para Aves 1,01kg</li>
+                <li>Tempero Alho e Sal 250g</li>
+                <li>Tempero Completo com Pimenta 250g</li>
+                <li>Tempero Completo sem Pimenta 250g</li>
+                <li>Tempero para Aves 250g</li>
+                <li>Parrilla Alho 600g</li>
+                <li>Parrilla Chimichurri 600g</li>
+                <li>Parrilha Cordeiro 600g</li>
+                <li>Parrilla Lemon Pepper 600g</li>
+                <li>Parrilla Tradicional 600g</li><p></p>
+                <h2>NATURAIS</h2><p></p>
+                <li>Açucar de Baunilha 80g</li>
+                <li>Açucar Colorido Vermelho</li>
+                <li>Açucar Colorido Rosa</li>
+                <li>Açucar Colorido Verde</li>
+                <li>Açucar Colorido Azul</li>
+                <li>Açucar Colorido Amarelo</li>
+                <li>Confeito Miçanga Colorido</li>
+                <li>Confeito Granulado Colorido</li>
+                <li>Chocolate Granulado 80g</li>
+                <li>Chocolate Granulado 200g</li>
+                <li>Chocolate Granulado Misto 80g</li>
+                <li>Chocolate Granulado Misto 200g</li>
+                <li>Sal Amoníaco</li>
+                <li>Colorau 500g</li>
+                <li>Colorau 90g</li>
+                <li>Bicarbonato de Sódio 500g</li>
+                <li>Bicarbnato de Sódio 250g</li>
+                <li>Bicarbonato de Sódio 90g</li><p></p>
+                <h2>TAGS</h2><p></p>
+                <li>Tag Açafrão</li>
+                <li>Tag Adobo</li>
+                <li>Tag Alecrim</li>
+                <li>Tag Alho, Cebola e Salsa</li>
+                <li>Tag Alho, Cebola e Salsa Defumado</li>
+                <li>Tag Alho Granulado</li>
+                <li>Tag Amaciante de Carne</li>
+                <li>Tag Anis Estrelado</li>
+                <li>Tag Boldo</li>
+                <li>Tag Camomila</li>
+                <li>Tag Canela em Pó</li>
+                <li>Tag Canela em Casca</li>
+                <li>Tag Capim Cidro</li>
+                <li>Tag Carqueja</li>
+                <li>Tag Cavalinha</li>
+                <li>Tag Cebola Granulada</li>
+                <li>Tag Chá Verde</li>
+                <li>Tag Chimichurri</li>
+                <li>Tag Chimichurri Defumado</li>
+                <li>Tag Chimichurri sem Pimenta</li>
+                <li>Tag Coentro</li>
+                <li>Tag Cominho em Pó</li>
+                <li>Tag Composto para Chimarrao</li>
+                <li>Tag Cravo</li>
+                <li>Tag Curry</li>
+                <li>Tag Endro</li>
+                <li>Tag Erva Doce</li>
+                <li>Tag Ervas Finas</li>
+                <li>Tag Funcho</li>
+                <li>Tag Gengibre Raíz</li>
+                <li>Tag Gengibre em Pó</li>
+                <li>Tag Guaco</li>
+                <li>Tag Hibisco</li>
+                <li>Tag Hortelã</li>
+                <li>Tag Lemon Pepper</li>
+                <li>Tag Limão e Ervas Finas</li>
+                <li>Tag Louro</li>
+                <li>Maçã Seca</li>
+                <li>Tag Macela</li>
+                <li>Tag Malva</li>
+                <li>Tag Manjericão</li>
+                <li>Tag Manjerona</li>
+                <li>Tag Melissa</li>
+                <li>Tag Noz Moscada Moida</li>
+                <li>Tag Noz Moscada em Grão</li>
+                <li>Tag Orégano</li>
+                <li>Orégano 40g</li>
+                <li>Orégano 50g</li>
+                <li>Tag Páprica Defumada</li>
+                <li>Tag Páprica Doce</li>
+                <li>Tag Páprica Picante</li>
+                <li>Tag Pimenta Calabresa</li>
+                <li>Tag Pimenta Preta em Grão</li>
+                <li>Tag Pimenta Preta em Pó</li>
+                <li>Tag Pimenta Branca em Pó</li>
+                <li>Tag Salsa</li>
+                <li>Tag Sálvia</li>
+                <li>Tag Tempera Tudo</li>
+                <li>Tag Tempero Baiano</li>
+                <li>Tag Tempero do Chefe</li>
+                <li>Tag Tempero Gaúcho</li>
+                <li>Tag Tempero para Grelhados</li>
+                <li>Tag Tempero à Portuguesa</li>
+                <li>Tag Tempero à Portuguesa Picante</li>
+                <li>Tag Tomilho</li>
+                <li>Tag Vinagrete</li>
+                </li>
+            </ul>
+        </div>
+        <div class="added-foods">
+            <h2>Alimentos Adicionados</h2>
+            <div id="addedFoodsList">
+                <!-- Itens adicionados serão inseridos aqui -->
+            </div>
+        </div>
     </div>
-  </nav>
-</header>
 
-<section class="cadastro">
-  <div class="container">
-    <h2>Cadastre-se</h2>
-    <form action="process_cadastro.php" method="POST">
-      <input type="text" name="nome" placeholder="Seu nome" required>
-      <input type="email" name="email" placeholder="Seu e-mail" required>
-      <input type="password" name="senha" placeholder="Sua senha" required>
-      <button type="submit" class="btn">Cadastrar</button>
-    </form>
-    <p>Já tem uma conta? <a href="login.html">Faça login aqui</a>.</p>
-  </div>
-</section>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const foodsList = document.getElementById('foods');
+            const addedFoodsList = document.getElementById('addedFoodsList');
 
-<footer>
-  <div class="container">
-    <p>&copy; 2024 Temperos Incríveis. Todos os direitos reservados.</p>
-  </div>
-</footer>
+            // Armazenar categorias e contadores para manter a ordem
+            const categories = ['Natural', 'Molho', 'Tag'];
+            const categoryIndexes = {}; // Índices para controlar a posição de cada categoria
+            categories.forEach((category, index) => {
+                categoryIndexes[category] = index;
+            });
 
+            // Adicionar evento de clique aos itens da lista de alimentos
+            foodsList.addEventListener('click', function(event) {
+                if (event.target.tagName === 'LI') {
+                    const foodName = event.target.textContent.trim(); // Remove espaços em branco extras
+
+                    // Verificar a categoria do alimento
+                    let category = null;
+                    for (let i = 0; i < categories.length; i++) {
+                        if (foodName.toUpperCase().includes(categories[i].toUpperCase())) {
+                            category = categories[i];
+                            break;
+                        }
+                    }
+
+                    // Verificar se o alimento já foi adicionado
+                    const itemAlreadyAdded = addedFoodsList.querySelector([data-name="${foodName}"]);
+                    if (itemAlreadyAdded) {
+                        const itemCountSpan = itemAlreadyAdded.querySelector('.item-count');
+                        let itemCount = parseInt(itemCountSpan.textContent);
+                        itemCount += 1;
+                        itemCountSpan.textContent = itemCount;
+                    } else {
+                        // Criar novo item na lista de alimentos adicionados
+                        const newItem = document.createElement('div');
+                        newItem.classList.add('item-row');
+                        newItem.setAttribute('data-name', foodName);
+                        newItem.innerHTML = 
+                            <div class="item-name">${foodName}</div>
+                            <div class="btn-container">
+                                <button class="btn" onclick="removeItems('${foodName}', 6)">-6</button>
+                                <button class="btn" onclick="removeItems('${foodName}', 1)">-1</button>
+                                <div class="item-count">1</div>
+                                <button class="btn" onclick="addMoreItems('${foodName}', 1)">+1</button>
+                                <button class="btn" onclick="addMoreItems('${foodName}', 6)">+6</button>
+                            </div>
+                        ;
+
+                        // Encontrar a posição correta para inserir o novo item
+                        let insertBeforeElement = null;
+                        const currentItems = addedFoodsList.querySelectorAll('.item-row');
+                        for (let i = 0; i < currentItems.length; i++) {
+                            const itemName = currentItems[i].getAttribute('data-name');
+                            const itemCategory = getCategory(itemName);
+                            if (categoryIndexes[itemCategory] > categoryIndexes[category]) {
+                                insertBeforeElement = currentItems[i];
+                                break;
+                            }
+                        }
+
+                        // Inserir o novo item na posição correta
+                        if (insertBeforeElement) {
+                            addedFoodsList.insertBefore(newItem, insertBeforeElement);
+                        } else {
+                            addedFoodsList.appendChild(newItem);
+                        }
+                    }
+                }
+            });
+
+            // Função para obter a categoria de um alimento
+            function getCategory(foodName) {
+                for (let i = 0; i < categories.length; i++) {
+                    if (foodName.toUpperCase().includes(categories[i].toUpperCase())) {
+                        return categories[i];
+                    }
+                }
+                return null;
+            }
+
+            // Função para adicionar mais itens de um mesmo tipo
+            window.addMoreItems = function(foodName, count) {
+                const item = addedFoodsList.querySelector([data-name="${foodName}"]);
+                const itemCountSpan = item.querySelector('.item-count');
+                let itemCount = parseInt(itemCountSpan.textContent);
+                itemCount += count;
+                itemCountSpan.textContent = itemCount;
+            };
+
+            // Função para remover itens de um mesmo tipo
+            window.removeItems = function(foodName, count) {
+                const item = addedFoodsList.querySelector([data-name="${foodName}"]);
+                const itemCountSpan = item.querySelector('.item-count');
+                let itemCount = parseInt(itemCountSpan.textContent);
+                itemCount -= count;
+                if (itemCount <= 0) {
+                    item.parentNode.removeChild(item); // Remove o elemento da lista
+                } else {
+                    itemCountSpan.textContent = itemCount;
+                }
+            };
+        });
+    </script>
 </body>
 </html>
