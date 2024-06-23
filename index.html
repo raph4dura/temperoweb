@@ -19,7 +19,7 @@
             margin: 20px auto;
             background-color: #fff;
             padding: 20px;
-            border-radius: 80px;
+            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
@@ -29,7 +29,7 @@
         }
 
         .foods-list h2 {
-            margin-top: 0.50;
+            margin-top: 0;
         }
 
         ul {
@@ -54,7 +54,7 @@
             top: 20px;
             right: 20px;
             bottom: 20px;
-            width: 350px;
+            width: 300px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -96,15 +96,68 @@
         .btn:hover {
             background-color: #0056b3;
         }
+
+        /* Estilos para a tabela de busca */
+        .search-table {
+            margin-bottom: 20px;
+        }
+
+        .search-table input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-table th,
+        .search-table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .search-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        .search-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Estilos para a seção de observação */
+        .observation {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        /* Estilos para o botão de enviar por email */
+        .btn-send-email {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-send-email:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
         <div class="foods-list">
             <h2>Lista de Alimentos</h2>
-            <ul id="foods">
+            <ul id="foodsList">
                 <!-- Lista de alimentos aqui -->
-                <h2>NATURAIS</h2><p></p>
                 <li>Açucar Mascavo 1kg</li>
                 <li>Açucar Mascavo 500g</li>
                 <li>Anéis de Frutas 120g</li>
@@ -113,7 +166,7 @@
                 <li>Cacau em Pó 100g</li>
                 <li>Chocoboll 220g</li>
                 <li>Farelo de Aveia 250g</li>
-                <li>Farinha de Aveia 250g</li>    
+                <li>Farinha de Aveia 250g</li>
                 <li>Farinha de Arroz Branca 500g</li>
                 <li>Farinha de Banana Verde 100g</li>    
                 <li>Farinha de Berinjela 100g</li>
@@ -298,6 +351,7 @@
                 <li>Tag Tomilho</li>
                 <li>Tag Vinagrete</li>
                 </li>
+                <!-- Exemplo, adicione os demais itens conforme necessário -->
             </ul>
         </div>
     </div>
@@ -305,17 +359,37 @@
     <!-- Janela de alimentos adicionados -->
     <div class="added-foods-container" id="addedFoodsContainer">
         <div class="added-foods" id="addedFoodsList">
-            <h2>Alimentos Adicionados</h2><ul id="foods">
+            <h2>Lista de Faltas</h2>
             <!-- Itens adicionados serão inseridos aqui -->
-         </ul>   
         </div>
+    </div>
+
+    <!-- Observação -->
+    <div class="container">
+        <form
+            id="emailForm"
+            action="https://formspree.io/f/xldrrnpw"
+            method="POST"
+            enctype="multipart/form-data"
+        >
+            <input type="hidden" name="subject" value="Lista de Alimentos Selecionados">
+            <input type="hidden" id="emailContent" name="emailContent">
+            <input type="hidden" id="observation" name="observation">
+
+            <label for="observationText">Observação:</label><br>
+            <textarea id="observationText" name="observationText" rows="4" cols="50"></textarea><br><br>
+
+            <button type="button" onclick="enviarPorEmail()" class="btn-send-email">Enviar</button>
+        </form>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const foodsList = document.getElementById('foods');
+            const foodsList = document.getElementById('foodsList');
             const addedFoodsContainer = document.getElementById('addedFoodsContainer');
             const addedFoodsList = document.getElementById('addedFoodsList');
+            const searchInput = document.getElementById('searchInput');
+            const foodsTable = document.getElementById('foodsTable');
 
             // Adicionar evento de clique aos itens da lista de alimentos
             foodsList.addEventListener('click', function(event) {
@@ -366,14 +440,55 @@
                 const item = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
                 const itemCountSpan = item.querySelector('.item-count');
                 let itemCount = parseInt(itemCountSpan.textContent);
-                itemCount -= count;
-                if (itemCount <= 0) {
-                    item.parentNode.removeChild(item); // Remove o elemento da lista
+                if (itemCount <= count) {
+                    addedFoodsList.removeChild(item);
                 } else {
+                    itemCount -= count;
                     itemCountSpan.textContent = itemCount;
                 }
             };
+
+            // Filtrar tabela de alimentos conforme a entrada do usuário
+            searchInput.addEventListener('input', function() {
+                const filterValue = searchInput.value.toUpperCase();
+                const rows = foodsTable.getElementsByTagName('tr');
+                for (let i = 0; i < rows.length; i++) {
+                    const td = rows[i].getElementsByTagName('td')[0];
+                    if (td) {
+                        const txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filterValue) > -1) {
+                            rows[i].style.display = '';
+                        } else {
+                            rows[i].style.display = 'none';
+                        }
+                    }
+                }
+            });
         });
+
+        // Função para enviar a lista por email
+        function enviarPorEmail() {
+            const addedFoods = document.querySelectorAll('.added-foods .item-row');
+            const observation = document.getElementById('observationText').value;
+
+            let emailContent = '';
+            addedFoods.forEach(function(item) {
+                const foodName = item.querySelector('.item-name').textContent;
+                const itemCount = item.querySelector('.item-count').textContent;
+                emailContent += `${foodName}: ${itemCount}\n`;
+            });
+
+            if (observation.trim() !== '') {
+                emailContent += `\nObservação:\n${observation}`;
+            }
+
+            // Atualizar o campo hidden do formulário
+            document.getElementById('emailContent').value = emailContent;
+            document.getElementById('observation').value = observation;
+
+            // Enviar o formulário para Formspree
+            document.getElementById('emailForm').submit();
+        }
     </script>
 </body>
 </html>
