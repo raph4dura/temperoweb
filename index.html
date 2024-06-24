@@ -220,6 +220,26 @@
                 <li>Semente de Linhaça Marrom 250g</li>
                 <li>Soja em Grão 500g</li>
                 <li>Trigo em Grão 500g</li>
+                <li>Açucar de Baunilha 80g</li>
+                <li>Açucar Colorido Vermelho</li>
+                <li>Açucar Colorido Rosa</li>
+                <li>Açucar Colorido Verde</li>
+                <li>Açucar Colorido Azul</li>
+                <li>Açucar Colorido Amarelo</li>
+                <li>Confeito Miçanga Colorido</li>
+                <li>Confeito Granulado Colorido</li>
+                <li>Chocolate Granulado 80g</li>
+                <li>Chocolate Granulado 200g</li>
+                <li>Chocolate Granulado Misto 80g</li>
+                <li>Chocolate Granulado Misto 200g</li>
+                <li>Sal Amoníaco</li>
+                <li>Colorau 500g</li>
+                <li>Colorau 90g</li>
+                <li>Bicarbonato de Sódio 500g</li>
+                <li>Bicarbnato de Sódio 250g</li>
+                <li>Bicarbonato de Sódio 90g</li><p></p>
+                
+                <h2>MOLHOS</h2><p></p>
                 <li>Alho com Ervas Finas 190g pote</li>
                 <li>Alho com Orégano 190g pote</li>
                 <li>Alho, Cebola e Salsa 190g pote</li>
@@ -227,8 +247,7 @@
                 <li>Alho Picado 1kg</li>
                 <li>Alho em Pasta 190g</li>
                 <li>Alho em Pasta 1kg</li>
-                <li>Alho, Salsa e Páprica 190g pote</li><p></p>
-                <h2>MOLHOS</h2><p></p>
+                <li>Alho, Salsa e Páprica 190g pote</li>
                 <li>Molho de Alho 150ml</li>
                 <li>Molho de Alho 900ml</li>
                 <li>Molho de Pimenta 150ml</li>
@@ -241,6 +260,7 @@
                 <li>Molho Shoyu 150ml</li>
                 <li>Molho Shoyu 900ml</li>
                 <li>Molho de Pimenta Defumada 150ml</li><p></p>
+                
                 <h2>SAIS</h2><p></p>
                 <li>Sal Marinho 1kg</li>
                 <li>Sal Completo sem Pimenta 500g</li>
@@ -264,25 +284,7 @@
                 <li>Parrilha Cordeiro 600g</li>
                 <li>Parrilla Lemon Pepper 600g</li>
                 <li>Parrilla Tradicional 600g</li><p></p>
-                <h2>NATURAIS</h2><p></p>
-                <li>Açucar de Baunilha 80g</li>
-                <li>Açucar Colorido Vermelho</li>
-                <li>Açucar Colorido Rosa</li>
-                <li>Açucar Colorido Verde</li>
-                <li>Açucar Colorido Azul</li>
-                <li>Açucar Colorido Amarelo</li>
-                <li>Confeito Miçanga Colorido</li>
-                <li>Confeito Granulado Colorido</li>
-                <li>Chocolate Granulado 80g</li>
-                <li>Chocolate Granulado 200g</li>
-                <li>Chocolate Granulado Misto 80g</li>
-                <li>Chocolate Granulado Misto 200g</li>
-                <li>Sal Amoníaco</li>
-                <li>Colorau 500g</li>
-                <li>Colorau 90g</li>
-                <li>Bicarbonato de Sódio 500g</li>
-                <li>Bicarbnato de Sódio 250g</li>
-                <li>Bicarbonato de Sódio 90g</li><p></p>
+
                 <h2>TAGS</h2><p></p>
                 <li>Tag Açafrão</li>
                 <li>Tag Adobo</li>
@@ -321,7 +323,6 @@
                 <li>Tag Lemon Pepper</li>
                 <li>Tag Limão e Ervas Finas</li>
                 <li>Tag Louro</li>
-                <li>Maçã Seca</li>
                 <li>Tag Macela</li>
                 <li>Tag Malva</li>
                 <li>Tag Manjericão</li>
@@ -330,8 +331,8 @@
                 <li>Tag Noz Moscada Moida</li>
                 <li>Tag Noz Moscada em Grão</li>
                 <li>Tag Orégano</li>
-                <li>Orégano 40g</li>
-                <li>Orégano 50g</li>
+                <li>Tag Orégano 40g</li>
+                <li>Tag Orégano 50g</li>
                 <li>Tag Páprica Defumada</li>
                 <li>Tag Páprica Doce</li>
                 <li>Tag Páprica Picante</li>
@@ -467,28 +468,68 @@
         });
 
         // Função para enviar a lista por email
-        function enviarPorEmail() {
-            const addedFoods = document.querySelectorAll('.added-foods .item-row');
-            const observation = document.getElementById('observationText').value;
 
-            let emailContent = '';
-            addedFoods.forEach(function(item) {
-                const foodName = item.querySelector('.item-name').textContent;
-                const itemCount = item.querySelector('.item-count').textContent;
-                emailContent += `${foodName}: ${itemCount}\n`;
-            });
+       // Função para enviar a lista por email
+function enviarPorEmail() {
+    const addedFoods = document.querySelectorAll('.added-foods .item-row');
+    const observation = document.getElementById('observationText').value;
 
-            if (observation.trim() !== '') {
-                emailContent += `\nObservação:\n${observation}`;
-            }
+    let categorizedItems = {
+        NATURAIS: [],
+        MOLHOS: [],
+        SAIS: [],
+        TAGS: []
+    };
 
-            // Atualizar o campo hidden do formulário
-            document.getElementById('emailContent').value = emailContent;
-            document.getElementById('observation').value = observation;
+    // Organizar os itens por categoria
+    addedFoods.forEach(function(item) {
+        const foodName = item.querySelector('.item-name').textContent;
+        const itemCount = item.querySelector('.item-count').textContent;
 
-            // Enviar o formulário para Formspree
-            document.getElementById('emailForm').submit();
+        // Determinar a categoria do item adicionado
+        if (foodName.startsWith('Molho')) {
+            categorizedItems.MOLHOS.push({ name: foodName, count: itemCount });
+        } else if (foodName.startsWith('Sal')) {
+            categorizedItems.SAIS.push({ name: foodName, count: itemCount });
+        } else if (foodName.startsWith('Tag')) {
+            categorizedItems.TAGS.push({ name: foodName, count: itemCount });
+        } else {
+            categorizedItems.NATURAIS.push({ name: foodName, count: itemCount });
         }
+    });
+
+    // Ordenar os itens dentro de cada categoria por nome
+    Object.keys(categorizedItems).forEach(function(category) {
+        categorizedItems[category].sort(function(a, b) {
+            return a.name.localeCompare(b.name);
+        });
+    });
+
+    // Construir o conteúdo do email categorizado
+    let emailContent = '';
+    ['NATURAIS', 'MOLHOS', 'SAIS', 'TAGS'].forEach(function(category) {
+        if (categorizedItems[category].length > 0) {
+            emailContent += `\n${category}:\n`;
+            categorizedItems[category].forEach(function(item) {
+                emailContent += `${item.name}: ${item.count}\n`;
+            });
+        }
+    });
+
+    // Adicionar observação se houver
+    if (observation.trim() !== '') {
+        emailContent += `\nObservação:\n${observation}`;
+    }
+
+    // Atualizar o campo hidden do formulário
+    document.getElementById('emailContent').value = emailContent;
+    document.getElementById('observation').value = observation;
+
+    // Enviar o formulário para Formspree
+    document.getElementById('emailForm').submit();
+}
+
+
     </script>
 </body>
 </html>
