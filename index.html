@@ -368,7 +368,7 @@
     <div class="container">
         <form
             id="emailForm"
-            action="https://formspree.io/f/mqazzdvn"
+            action="https://formspree.io/f/xldrrnpw"
             method="POST"
             enctype="multipart/form-data"
         >
@@ -384,136 +384,111 @@
     </div>
 
     <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const foodsList = document.getElementById('foodsList');
-    const addedFoodsContainer = document.getElementById('addedFoodsContainer');
-    const addedFoodsList = document.getElementById('addedFoodsList');
-    const searchInput = document.getElementById('searchInput');
-    const foodsTable = document.getElementById('foodsTable');
+        document.addEventListener('DOMContentLoaded', function() {
+            const foodsList = document.getElementById('foodsList');
+            const addedFoodsContainer = document.getElementById('addedFoodsContainer');
+            const addedFoodsList = document.getElementById('addedFoodsList');
+            const searchInput = document.getElementById('searchInput');
+            const foodsTable = document.getElementById('foodsTable');
 
-    // Estrutura de dados para agrupar os itens por categoria
-    let addedItemsByCategory = {};
+            // Adicionar evento de clique aos itens da lista de alimentos
+            foodsList.addEventListener('click', function(event) {
+                if (event.target.tagName === 'LI') {
+                    const foodName = event.target.textContent;
 
-    // Adicionar evento de clique aos itens da lista de alimentos
-    foodsList.addEventListener('click', function(event) {
-        if (event.target.tagName === 'LI') {
-            const foodName = event.target.textContent;
-
-            // Verificar se o alimento já foi adicionado
-            const itemAlreadyAdded = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
-            if (itemAlreadyAdded) {
-                const itemCountSpan = itemAlreadyAdded.querySelector('.item-count');
-                let itemCount = parseInt(itemCountSpan.textContent);
-                itemCount += 1;
-                itemCountSpan.textContent = itemCount;
-            } else {
-                // Obter a categoria do alimento
-                let category = '';
-                const headers = foodsList.querySelectorAll('h2');
-                headers.forEach(header => {
-                    if (header.textContent.trim() !== '' && foodName.includes(header.textContent.trim())) {
-                        category = header.textContent.trim();
+                    // Verificar se o alimento já foi adicionado
+                    const itemAlreadyAdded = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
+                    if (itemAlreadyAdded) {
+                        const itemCountSpan = itemAlreadyAdded.querySelector('.item-count');
+                        let itemCount = parseInt(itemCountSpan.textContent);
+                        itemCount += 1;
+                        itemCountSpan.textContent = itemCount;
+                    } else {
+                        // Criar novo item na lista de alimentos adicionados
+                        const newItem = document.createElement('div');
+                        newItem.classList.add('item-row');
+                        newItem.setAttribute('data-name', foodName);
+                        newItem.innerHTML = `
+                            <div class="item-name">${foodName}</div>
+                            <div class="btn-container">
+                                <button class="btn" onclick="removeItems('${foodName}', 6)">-6</button>
+                                <button class="btn" onclick="removeItems('${foodName}', 1)">-1</button>
+                                <div class="item-count">1</div>
+                                <button class="btn" onclick="addMoreItems('${foodName}', 1)">+1</button>
+                                <button class="btn" onclick="addMoreItems('${foodName}', 6)">+6</button>
+                            </div>
+                        `;
+                        addedFoodsList.appendChild(newItem);
                     }
-                });
 
-                // Criar novo item na lista de alimentos adicionados
-                const newItem = document.createElement('div');
-                newItem.classList.add('item-row');
-                newItem.setAttribute('data-name', foodName);
-                newItem.innerHTML = `
-                    <div class="item-name">${foodName}</div>
-                    <div class="btn-container">
-                        <button class="btn" onclick="removeItems('${foodName}', 6)">-6</button>
-                        <button class="btn" onclick="removeItems('${foodName}', 1)">-1</button>
-                        <div class="item-count">1</div>
-                        <button class="btn" onclick="addMoreItems('${foodName}', 1)">+1</button>
-                        <button class="btn" onclick="addMoreItems('${foodName}', 6)">+6</button>
-                    </div>
-                `;
-
-                // Adicionar ao DOM
-                addedFoodsList.appendChild(newItem);
-
-                // Adicionar ao objeto de itens agrupados por categoria
-                if (!addedItemsByCategory[category]) {
-                    addedItemsByCategory[category] = [];
+                    // Mostrar a janela de alimentos adicionados
+                    addedFoodsContainer.style.display = 'block';
                 }
-                addedItemsByCategory[category].push(newItem);
-            }
-
-            // Mostrar a janela de alimentos adicionados
-            addedFoodsContainer.style.display = 'block';
-        }
-    });
-
-    // Função para adicionar mais itens de um mesmo tipo
-    window.addMoreItems = function(foodName, count) {
-        const item = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
-        const itemCountSpan = item.querySelector('.item-count');
-        let itemCount = parseInt(itemCountSpan.textContent);
-        itemCount += count;
-        itemCountSpan.textContent = itemCount;
-    };
-
-    // Função para remover itens de um mesmo tipo
-    window.removeItems = function(foodName, count) {
-        const item = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
-        const itemCountSpan = item.querySelector('.item-count');
-        let itemCount = parseInt(itemCountSpan.textContent);
-        if (itemCount <= count) {
-            addedFoodsList.removeChild(item);
-        } else {
-            itemCount -= count;
-            itemCountSpan.textContent = itemCount;
-        }
-    };
-
-    // Filtrar tabela de alimentos conforme a entrada do usuário
-    searchInput.addEventListener('input', function() {
-        const filterValue = searchInput.value.toUpperCase();
-        const rows = foodsTable.getElementsByTagName('tr');
-        for (let i = 0; i < rows.length; i++) {
-            const td = rows[i].getElementsByTagName('td')[0];
-            if (td) {
-                const txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filterValue) > -1) {
-                    rows[i].style.display = '';
-                } else {
-                    rows[i].style.display = 'none';
-                }
-            }
-        }
-    });
-
-    // Função para enviar a lista por email
-    function enviarPorEmail() {
-        const observation = document.getElementById('observationText').value;
-
-        let emailContent = '';
-        // Percorrer as categorias e adicionar os itens agrupados por categoria
-        Object.keys(addedItemsByCategory).forEach(category => {
-            emailContent += `${category}:\n`;
-            addedItemsByCategory[category].forEach(item => {
-                const foodName = item.querySelector('.item-name').textContent;
-                const itemCount = item.querySelector('.item-count').textContent;
-                emailContent += `- ${foodName}: ${itemCount}\n`;
             });
-            emailContent += '\n'; // Adicionar linha em branco entre categorias
+
+            // Função para adicionar mais itens de um mesmo tipo
+            window.addMoreItems = function(foodName, count) {
+                const item = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
+                const itemCountSpan = item.querySelector('.item-count');
+                let itemCount = parseInt(itemCountSpan.textContent);
+                itemCount += count;
+                itemCountSpan.textContent = itemCount;
+            };
+
+            // Função para remover itens de um mesmo tipo
+            window.removeItems = function(foodName, count) {
+                const item = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
+                const itemCountSpan = item.querySelector('.item-count');
+                let itemCount = parseInt(itemCountSpan.textContent);
+                if (itemCount <= count) {
+                    addedFoodsList.removeChild(item);
+                } else {
+                    itemCount -= count;
+                    itemCountSpan.textContent = itemCount;
+                }
+            };
+
+            // Filtrar tabela de alimentos conforme a entrada do usuário
+            searchInput.addEventListener('input', function() {
+                const filterValue = searchInput.value.toUpperCase();
+                const rows = foodsTable.getElementsByTagName('tr');
+                for (let i = 0; i < rows.length; i++) {
+                    const td = rows[i].getElementsByTagName('td')[0];
+                    if (td) {
+                        const txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filterValue) > -1) {
+                            rows[i].style.display = '';
+                        } else {
+                            rows[i].style.display = 'none';
+                        }
+                    }
+                }
+            });
         });
 
-        if (observation.trim() !== '') {
-            emailContent += `Observação:\n${observation}`;
+        // Função para enviar a lista por email
+        function enviarPorEmail() {
+            const addedFoods = document.querySelectorAll('.added-foods .item-row');
+            const observation = document.getElementById('observationText').value;
+
+            let emailContent = '';
+            addedFoods.forEach(function(item) {
+                const foodName = item.querySelector('.item-name').textContent;
+                const itemCount = item.querySelector('.item-count').textContent;
+                emailContent += `${foodName}: ${itemCount}\n`;
+            });
+
+            if (observation.trim() !== '') {
+                emailContent += `\nObservação:\n${observation}`;
+            }
+
+            // Atualizar o campo hidden do formulário
+            document.getElementById('emailContent').value = emailContent;
+            document.getElementById('observation').value = observation;
+
+            // Enviar o formulário para Formspree
+            document.getElementById('emailForm').submit();
         }
-
-        // Atualizar o campo hidden do formulário
-        document.getElementById('emailContent').value = emailContent;
-        document.getElementById('observation').value = observation;
-
-        // Enviar o formulário para Formspree
-        document.getElementById('emailForm').submit();
-    }
-});
-
     </script>
 </body>
 </html>
