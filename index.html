@@ -164,16 +164,14 @@
                 <template v-for="(items, category) in addedItemsByCategory" :key="category">
                     <h3>{{ category }}</h3>
                     <ul>
-                        <li v-for="item in items" :key="item.name" :id="'item-' + item.name">
+                        <li v-for="(item, index) in items" :key="index" :id="'added-item-' + item.name + index">
                             {{ item.name }} - {{ item.quantity }}
                             <div class="quantity-controls">
                                 <button class="control-btn" @click="adjustQuantity(item, category, 1)">+1</button>
-                                <button class="control-btn" @click="adjustQuantity(item, category, -1)">-1</button>
-                                <input type="number" v-model.number="item.quantityToAdd" style="width: 50px;">
-                                <button class="control-btn" @click="increaseQuantityByInput(item)">Adicionar</button>
-                                <button class="control-btn" @click="decreaseBySix(item)" v-if="item.quantity > 6">-6</button>
                                 <button class="control-btn" @click="increaseBySix(item)">+6</button>
-                                <button class="control-btn" @click="increaseBySixItem(item)">+6 Item</button>
+                                <button class="control-btn" @click="deleteItem(item)">
+                                    <img src="delete-icon.png" alt="Delete" style="width: 16px; height: 16px;">
+                                </button>
                             </div>
                         </li>
                     </ul>
@@ -214,20 +212,198 @@
                 return {
                     foodCategories: {
                         Naturais: [
-                            { name: 'Maçã' },
-                            { name: 'Banana' }
-                        ],
-                        Molhos: [
-                            { name: 'Ketchup' },
-                            { name: 'Mostarda' }
-                        ],
-                        Sais: [
-                            { name: 'Sal de Mesa' },
-                            { name: 'Sal Marinho' }
+                        { name: 'Açucar Mascavo 1kg' },
+                    { name: 'Açucar Mascavo 500g' },
+                    { name: 'Anéis de Frutas 120g' },
+                    { name: 'Aveia em Flocos Finos 250g' },
+                    { name: 'Aveia em Flocos Grossos 250g' },
+                    { name: 'Cacau em Pó 100g' },
+                    { name: 'Chocoboll 220g' },
+                    { name: 'Farelo de Aveia 250g' },
+                    { name: 'Farinha de Aveia 250g' },
+                    { name: 'Farinha de Arroz Branca 500g' },
+                    { name: 'Farinha de Banana Verde 100g' },
+                    { name: 'Farinha de Berinjela 100g' },
+                    { name: 'Farinha de Centeio 500g' },
+                    { name: 'Farinha de Linhaça Dourada 220g' },
+                    { name: 'Farinha de Linhaça Marrom 250g' },
+                    { name: 'Farinha de Maracujá 250g' },
+                    { name: 'Farinha de Soja 250g' },
+                    { name: 'Farinha de Trigo Integral 500g' },
+                    { name: 'Flocos de Arroz 150g' },
+                    { name: 'Flocos de Milho com Açucar 150g' },
+                    { name: 'Flocos de Milho Natural 150g' },
+                    { name: 'Gergelim Descascado' },
+                    { name: 'Gérmen de Trigo 250g' },
+                    { name: 'Granola com Adoçante Diet 1kg' },
+                    { name: 'Granola com Adoçante Diet 250g' },
+                    { name: 'Granola com Canela 250g' },
+                    { name: 'Granola com Côco 1kg' },
+                    { name: 'Granola com Côco 250g' },
+                    { name: 'Granola Natural Light 1kg' },
+                    { name: 'Granola Natural Light 250g' },
+                    { name: 'Granola Docemel 1kg' },
+                    { name: 'Granola Docemel 250g' },
+                    { name: 'Granola Tradicional 1kg' },
+                    { name: 'Granola Tradicional 250g' },
+                    { name: 'Proteína de Soja Escura 250g' },
+                    { name: 'Proteína de Soja Graúda 250g' },
+                    { name: 'Proteína de Soja Miúda Clara 250g' },
+                    { name: 'Ameixa Preta sem Caroço 100g' },
+                    { name: 'Ameixa Preta com Caroço 100g' },
+                    { name: 'Ameixa sem Caroço POTE' },
+                    { name: 'Ameixa com Caroço POTE' },
+                    { name: 'Frutas Cristalizadas Sachê' },
+                    { name: 'Frutas Cristalizadas POTE' },
+                    { name: 'Tag Ameixa Preta sem Caroço' },
+                    { name: 'Tag Ameixa Preta com Caroço' },
+                    { name: 'Tag Uva Passa Preta' },
+                    { name: 'Uva Passa Preta Sachê' },
+                    { name: 'Uva Passa Branca Sachê' },
+                    { name: 'Uva Passa Preta POTE' },
+                    { name: 'Uva Passa Branca POTE' },
+                    { name: 'Côco Seco Ralado Grosso 100g' },
+                    { name: 'Côco Seco Ralado Fino 100g' },
+                    { name: 'Côco Seco Ralado Adoçado 100g' },
+                    { name: 'Semente de Chia 100g' },
+                    { name: 'Quinoa em Flocos 100g' },
+                    { name: 'Quinoa em Grãos 100g' },
+                    { name: 'Levedo de Cerveja' },
+                    { name: 'Semente de Girassol 100g' },
+                    { name: 'Semente de Linhaça Dourada 200g' },
+                    { name: 'Semente de Linhaça Marrom 250g' },
+                    { name: 'Soja em Grão 500g' },
+                    { name: 'Trigo em Grão 500g' },
+                    { name: 'Alho com Ervas Finas 190g pote' },
+                    { name: 'Alho com Orégano 190g pote' },
+                    { name: 'Alho, Cebola e Salsa 190g pote' },
+                    { name: 'Alho Picado 190g' },
+                    { name: 'Alho Picado 1kg' },
+                    { name: 'Alho em Pasta 190g' },
+                    { name: 'Alho em Pasta 1kg' },
+                    { name: 'Alho, Salsa e Páprica 190g pote' },
+                    { name: 'Açucar de Baunilha 80g' },
+                    { name: 'Açucar Colorido Vermelho' },
+                    { name: 'Açucar Colorido Rosa' },
+                    { name: 'Açucar Colorido Verde' },
+                    { name: 'Açucar Colorido Azul' },
+                    { name: 'Açucar Colorido Amarelo' },
+                    { name: 'Confeito Miçanga Colorido' },
+                    { name: 'Confeito Granulado Colorido' },
+                    { name: 'Chocolate Granulado 80g' },
+                    { name: 'Chocolate Granulado 200g' },
+                    { name: 'Chocolate Granulado Misto 80g' },
+                    { name: 'Chocolate Granulado Misto 200g' },
+                    { name: 'Sal Amoníaco' },
+                    { name: 'Colorau 500g' },
+                    { name: 'Colorau 90g' },
+                    { name: 'Bicarbonato de Sódio 500g' },
+                    { name: 'Bicarbnato de Sódio 250g' },
+                    { name: 'Bicarbonato de Sódio 90g' }
+                ],
+                Molhos: [
+                    { name: 'Molho de Alho 150ml' },
+                    { name: 'Molho de Alho 900ml' },
+                    { name: 'Molho de Pimenta 150ml' },
+                    { name: 'Molho de Pimenta 900ml' },
+                    { name: 'Molho de Pimenta Malagueta 70g' },
+                    { name: 'Molho de Cebola Defumada 150ml' },
+                    { name: 'Molho de Cebola Defumada 900ml' },
+                    { name: 'Molho Inglês 150ml' },
+                    { name: 'Molho Inglês 900ml' },
+                    { name: 'Molho Shoyu 150ml' },
+                    { name: 'Molho Shoyu 900ml' },
+                    { name: 'Molho de Pimenta Defumada 150ml' }
+                ],
+                Sais: [
+                    { name: 'Sal Marinho 1kg' },
+                    { name: 'Sal Completo sem Pimenta 500g' },
+                    { name: 'Sal Completo com Pimenta 500g' },
+                    { name: 'Sal para Churrasco sem Pimenta 1kg' },
+                    { name: 'Sal para Churrasco com Pimenta 1kg' },
+                    { name: 'Sal para Churrasco 500g' },
+                    { name: 'Sal para Galeto sem Pimenta 1kg' },
+                    { name: 'Sal para Galeto sem Pimenta 500g' },
+                    { name: 'Sal para Galeto com Pimenta 500g' },
+                    { name: 'Tempero Alho e Sal 1,01kg' },
+                    { name: 'Tempero Completo com Pimenta 1,01kg' },
+                    { name: 'Tempero Completo sem Pimenta 1,01kg' },
+                    { name: 'Tempero para Aves 1,01kg' },
+                    { name: 'Tempero Alho e Sal 250g' },
+                    { name: 'Tempero Completo com Pimenta 250g' },
+                    { name: 'Tempero Completo sem Pimenta 250g' },
+                    { name: 'Tempero para Aves 250g' },
+                    { name: 'Parrilla Alho 600g' },
+                    { name: 'Parrilla Chimichurri 600g' },
+                    { name: 'Parrilha Cordeiro 600g' },
+                    { name: 'Parrilla Lemon Pepper 600g' },
+                    { name: 'Parrilla Tradicional 600g' }
+                        
                         ],
                         Tags: [
-                            { name: 'Orgânico', quantity: 6 },
-                            { name: 'Sem Glúten', quantity: 6 }
+                        { name: 'Tag Açafrão', quantity: 6 },
+                    { name: 'Tag Adobo', quantity: 6 },
+                    { name: 'Tag Alecrim', quantity: 6 },
+                    { name: 'Tag Alho, Cebola e Salsa', quantity: 6 },
+                    { name: 'Tag Alho, Cebola e Salsa Defumado', quantity: 6 },
+                    { name: 'Tag Alho Granulado', quantity: 6 },
+                    { name: 'Tag Amaciante de Carne', quantity: 6 },
+                    { name: 'Tag Anis Estrelado', quantity: 6 },
+                    { name: 'Tag Boldo', quantity: 6 },
+                    { name: 'Tag Camomila', quantity: 6 },
+                    { name: 'Tag Canela em Pó', quantity: 6 },
+                    { name: 'Tag Canela em Casca', quantity: 6 },
+                    { name: 'Tag Capim Cidro', quantity: 6 },
+                    { name: 'Tag Carqueja', quantity: 6 },
+                    { name: 'Tag Cavalinha', quantity: 6 },
+                    { name: 'Tag Cebola Granulada', quantity: 6 },
+                    { name: 'Tag Chá Verde', quantity: 6 },
+                    { name: 'Tag Chimichurri', quantity: 6 },
+                    { name: 'Tag Chimichurri Defumado', quantity: 6 },
+                    { name: 'Tag Chimichurri sem Pimenta', quantity: 6 },
+                    { name: 'Tag Coentro em Pó', quantity: 6 },
+                    { name: 'Tag Cominho em Pó', quantity: 6 },
+                    { name: 'Tag Composto para Chimarrão', quantity: 6 },
+                    { name: 'Tag Cravo', quantity: 6 },
+                    { name: 'Tag Curry', quantity: 6 },
+                    { name: 'Tag Endro', quantity: 6 },
+                    { name: 'Tag Erva Doce', quantity: 6 },
+                    { name: 'Tag Ervas Finas', quantity: 6 },
+                    { name: 'Tag Funcho', quantity: 6 },
+                    { name: 'Tag Gengibre Raíz', quantity: 6 },
+                    { name: 'Tag Gengibre em Pó', quantity: 6 },
+                    { name: 'Tag Guaco', quantity: 6 },
+                    { name: 'Tag Hibisco', quantity: 6 },
+                    { name: 'Tag Hortelã', quantity: 6 },
+                    { name: 'Tag Lemon Pepper', quantity: 6 },
+                    { name: 'Tag Limão e Ervas Finas', quantity: 6 },
+                    { name: 'Tag Louro', quantity: 6 },
+                    { name: 'Tag Macela', quantity: 6 },
+                    { name: 'Tag Malva', quantity: 6 },
+                    { name: 'Tag Manjericão', quantity: 6 },
+                    { name: 'Tag Manjerona', quantity: 6 },
+                    { name: 'Tag Melissa', quantity: 6 },
+                    { name: 'Tag Noz Moscada Moída', quantity: 6 },
+                    { name: 'Tag Noz Moscada em Grão', quantity: 6 },
+                    { name: 'Tag Orégano', quantity: 6 },
+                    { name: 'Tag Páprica Defumada', quantity: 6 },
+                    { name: 'Tag Páprica Doce', quantity: 6 },
+                    { name: 'Tag Páprica Picante', quantity: 6 },
+                    { name: 'Tag Pimenta Calabresa', quantity: 6 },
+                    { name: 'Tag Pimenta Preta em Grão', quantity: 6 },
+                    { name: 'Tag Pimenta Preta em Pó', quantity: 6 },
+                    { name: 'Tag Pimenta Branca em Pó', quantity: 6 },
+                    { name: 'Tag Salsa', quantity: 6 },
+                    { name: 'Tag Sálvia', quantity: 6 },
+                    { name: 'Tag Tempera Tudo', quantity: 6 },
+                    { name: 'Tag Tempero Baiano', quantity: 6 },
+                    { name: 'Tag Tempero do Chefe', quantity: 6 },
+                    { name: 'Tag Tempero Gaúcho', quantity: 6 },
+                    { name: 'Tag Tempero para Grelhados', quantity: 6 },
+                    { name: 'Tag Tempero à Portuguesa', quantity: 6 },
+                    { name: 'Tag Tempero à Portuguesa Picante', quantity: 6 },
+                    { name: 'Tag Tomilho', quantity: 6 },
+                    { name: 'Tag Vinagrete', quantity: 6 }
                         ]
                     },
                     addedItems: []
@@ -245,6 +421,7 @@
                     this.addedItems.forEach(item => {
                         if (categorizedItems[item.category]) {
                             categorizedItems[item.category].push(item);
+                            // Ordenar os itens dentro da categoria
                             categorizedItems[item.category].sort((a, b) => a.name.localeCompare(b.name));
                         }
                     });
@@ -253,6 +430,7 @@
                 }
             },
             methods: {
+    
                 addItem(item, category) {
                     const existingItem = this.addedItems.find(
                         added => added.name === item.name && added.category === category
@@ -260,7 +438,7 @@
 
                     if (existingItem) {
                         // Scroll suave para o item na lista de itens adicionados
-                        const listItem = document.getElementById(`item-${existingItem.name}`);
+                        const listItem = document.getElementById(`added-item-${existingItem.name + this.addedItems.indexOf(existingItem)}`);
                         if (listItem) {
                             listItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
@@ -270,10 +448,6 @@
                             initialQuantity = 6; // Iniciar itens da categoria Tags com 6
                         }
                         const newItem = { name: item.name, category, quantity: initialQuantity };
-                        
-                        // Adicionar campos para quantidade a ser adicionada/subtraída
-                        newItem.quantityToAdd = 1;
-                        newItem.quantityToSubtract = 1;
 
                         this.addedItems.push(newItem);
 
@@ -287,7 +461,7 @@
 
                         // Scroll suave para o novo item adicionado
                         setTimeout(() => {
-                            const newItemElement = document.getElementById(`item-${newItem.name}`);
+                            const newItemElement = document.getElementById(`added-item-${newItem.name + this.addedItems.indexOf(newItem)}`);
                             if (newItemElement) {
                                 newItemElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             }
@@ -303,26 +477,8 @@
                         addedItem.quantity += change;
                     }
                 },
-                increaseQuantityByInput(item) {
-                    const addedItem = this.addedItems.find(
-                        added => added.name === item.name && added.category === item.category
-                    );
-
-                    if (addedItem) {
-                        addedItem.quantity += addedItem.quantityToAdd;
-                        addedItem.quantityToAdd = 1; // Resetar campo de entrada
-                    }
-                },
-                decreaseBySix(item) {
-                    const addedItem = this.addedItems.find(
-                        added => added.name === item.name && added.category === item.category
-                    );
-
-                    if (addedItem && addedItem.quantity > 6) {
-                        addedItem.quantity -= 6;
-                    }
-                },
                 increaseBySix(item) {
+            
                     const addedItem = this.addedItems.find(
                         added => added.name === item.name && added.category === item.category
                     );
@@ -331,13 +487,10 @@
                         addedItem.quantity += 6;
                     }
                 },
-                increaseBySixItem(item) {
-                    const addedItem = this.addedItems.find(
-                        added => added.name === item.name && added.category === item.category
-                    );
-
-                    if (addedItem) {
-                        addedItem.quantity += 6;
+                deleteItem(item) {
+                    const index = this.addedItems.indexOf(item);
+                    if (index !== -1) {
+                        this.addedItems.splice(index, 1);
                     }
                 },
                 enviarPorEmail() {
@@ -367,3 +520,4 @@
     </script>
 </body>
 </html>
+
