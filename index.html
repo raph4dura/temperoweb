@@ -5,26 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Alimentos Naturais</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Reset and base styles */
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            background-color: #f0f0f0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            padding: 20px;
         }
 
         .container {
-            display: flex;
-            justify-content: space-between;
             max-width: 1200px;
             margin: 20px auto;
-            background-color: #fff;
+            background-color: #000;
             padding: 20px;
+            border: 1px solid #fff;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
         .foods-list {
-            flex: 0.50;
             padding: 20px;
         }
 
@@ -38,15 +43,33 @@
         }
 
         li {
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 4px;
-            background-color: #f0f0f0;
             margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         li:hover {
-            background-color: #e0e0e0;
+            background-color: #444;
+        }
+
+        .add-btn,
+        .control-btn {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-btn:hover,
+        .control-btn:hover {
+            background-color: #0056b3;
         }
 
         .added-foods-container {
@@ -55,87 +78,24 @@
             right: 20px;
             bottom: 20px;
             width: 300px;
-            background-color: #fff;
+            background-color: #000;
+            border: 1px solid #fff;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
             overflow-y: auto;
             display: none;
             z-index: 1000;
+            color: #fff;
         }
 
         .added-foods {
             padding: 20px;
         }
 
-        .item-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
+        .added-foods h2 {
+            margin-top: 0;
         }
 
-        .item-name {
-            flex: 1;
-        }
-
-        .btn-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 5px;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        /* Estilos para a tabela de busca */
-        .search-table {
-            margin-bottom: 20px;
-        }
-
-        .search-table input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .search-table th,
-        .search-table td {
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: left;
-        }
-
-        .search-table th {
-            background-color: #f0f0f0;
-            font-weight: bold;
-        }
-
-        .search-table tbody tr:hover {
-            background-color: #f9f9f9;
-        }
-
-        /* Estilos para a seção de observação */
-        .observation {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #f9f9f9;
-        }
-
-        /* Estilos para o botão de enviar por email */
         .btn-send-email {
             margin-top: 20px;
             padding: 10px 20px;
@@ -149,463 +109,255 @@
         .btn-send-email:hover {
             background-color: #0056b3;
         }
+
+        #observationText {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #fff;
+            border-radius: 4px;
+            resize: vertical;
+            color: #000;
+        }
+
+        .quantity-controls {
+            margin-top: 4px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .added-foods-container {
+                width: 100%;
+                max-width: 100%;
+                left: 0;
+                right: 0;
+                border-radius: 0;
+            }
+        }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <div class="foods-list">
-            <h2>Lista de Alimentos</h2>
-            <ul id="foodsList">
-                <!-- Lista de alimentos aqui -->
-                <li>Açucar Mascavo 1kg cod 1</li>
-                <li>Açucar Mascavo 500g cod 2</li>
-                <li>Anéis de Frutas 120g cod 32</li>
-                <li>Aveia em Flocos Finos 250g cod 7</li>
-                <li>Aveia em Flocos Grossos 250g cod 8</li>
-                <li>Cacau em Pó 100g cod 9</li>
-                <li>Chocoboll 220g cod 31</li>
-                <li>Farelo de Aveia 250g cod 78</li>
-                <li>Farinha de Aveia 250g cod 20</li>
-                <li>Farinha de Arroz Branca 500g cod 197</li>
-                <li>Farinha de Banana Verde 100g cod 739</li>    
-                <li>Farinha de Berinjela 100g cod 713</li>
-                <li>Farinha de Centeio 500g cod 21</li>
-                <li>Farinha de Linhaça Dourada 220g cod 87</li>
-                <li>Farinha de Linhaça Marrom 250g cod 22</li>
-                <li>Farinha de Maracujá 250g cod 19</li>
-                <li>Farinha de Soja 250g cod 23</li>
-                <li>Farinha de Trigo Integral 500g cod 24</li>
-                <li>Flocos de Arroz 150g cod 738</li>
-                <li>Flocos de Milho com Açucar 150g cod 27</li>
-                <li>Flocos de Milho Natural 150g cod 30</li>
-                <li>Guaraná em Pó 50g cod 91</li>
-                <li>Gergelim Descascado cod 34</li>
-                <li>Gérmen de Trigo 250g cod 35</li>
-                <li>Granola com Adoçante Diet 1kg cod 36</li>
-                <li>Granola com Adoçante Diet 250g cod 37</li>
-                <li>Granola com Canela 250g cod 42</li>
-                <li>Granola com Côco 1kg cod 40</li>
-                <li>Granola com Côco 250g cod 41</li>
-                <li>Granola Natural Light 1kg cod 43</li>
-                <li>Granola Natural Light 250g cod 44</li>
-                <li>Granola Docemel 1kg cod 45</li>
-                <li>Granola Docemel 250g cod 46</li>
-                <li>Granola Tradicional 1kg cod 39</li>
-                <li>Granola Tradicional 250g cod 38</li>
-                <li>Proteína de Soja Escura 250g cod 57</li>
-                <li>Proteína de Soja Graúda 250g cod 58</li>
-                <li>Proteína de Soja Miúda Clara 250g cod 56</li>
-                <li>Trigo para Kibe 200g cod 81</li>
-                <li>Ameixa Preta sem Caroço 100g cod 5</li>
-                <li>Ameixa Preta com Caroço 100g cod 3</li>
-                <li>Ameixa sem Caroço POTE 100g cod 96</li>
-                <li>Ameixa com Caroço POTE 100g cod 4</li>
-                <li>Frutas Cristalizadas Sachê 150g cod 33</li>
-                <li>Frutas Cristalizadas POTE 150g cod 66</li>
-                <li>Tag Castanha do Pará 50g cod 1132</li>
-                <li>Castanha do Pará 100g cod 11</li>
-                <li>Castanha de Caju 100g cod 10</li>
-                <li>Castanha do Pará POTE 100g cod 588</li>
-                <li>Tag Castanha de Caju 50g cod 308</li>
-                <li>Castaha de Caju POTE 100g cod 589</li>
-                <li>Tag Ameixa Preta sem Caroço 50g cod 307</li>
-                <li>Tag Ameixa Preta com Caroço 50g cod 306</li>
-                <li>Tag Uva Passa Preta 80g cod 312</li>
-                <li>Uva Passa Preta Sachê 150g cod 65</li>
-                <li>Uva Passa Branca Sachê 100g cod 504</li>
-                <li>Uva Passa Preta POTE 130g cod 64</li>
-                <li>Uva Passa Branca POTE 100g cod 779</li>
-                <li>Côco Seco Ralado Grosso 100g cod 14</li>
-                <li>Côco Seco Ralado Fino 100g cod 13</li>
-                <li>Côco Seco Ralado Adoçado 100g cod 856</li>
-                <li>Semente de Chia 100g cod 790</li>
-                <li>Quinoa em Flocos 100g cod 245</li>
-                <li>Quinoa em Grãos 100g cod 246</li>
-                <li>Levedo de Cerveja cod 817</li>
-                <li>Semente de Girassol 100g cod 502</li>
-                <li>Semente de Linhaça Dourada 200g cod 50</li>
-                <li>Semente de Linhaça Marrom 250g cod 51</li>
-                <li>Soja em Grão 500g cod 61</li>
-                <li>Trigo em Grão 500g cod 62</li>
-                <li>Maçã Seca cod 52</li>
-                <li>Açucar de Baunilha 80g cod 861</li>
-                <li>Açucar Colorido Vermelho 80g cod 264</li>
-                <li>Açucar Colorido Rosa 80g cod 262</li>
-                <li>Açucar Colorido Verde 80g cod 263</li>
-                <li>Açucar Colorido Azul 80g cod 261</li>
-                <li>Açucar Colorido Amarelo 80g cod 260</li>
-                <li>Confeito Miçanga Colorido 80g cod 119</li>
-                <li>Confeito Granulado Colorido 80g cod 120</li>
-                <li>Chocolate Granulado 80g cod 199</li>
-                <li>Chocolate Granulado 200g cod 117</li>
-                <li>Chocolate Granulado Misto 80g cod 162</li>
-                <li>Chocolate Granulado Misto 200g cod 92</li>
-                <li>Sal Amoníaco 90g cod 103</li>
-                <li>Colorau 500g cod 767</li>
-                <li>Colorau 90g cod 118</li>
-                <li>Bicarbonato de Sódio 500g cod 1432</li>
-                <li>Bicarbonato de Sódio 250g cod 879</li>
-                <li>Bicarbonato de Sódio 90g cod 860</li>
-                <li>Sal Rosa do Himalaia 180g cod 900</li><p></p>
-                
-                <h2>MOLHOS</h2><p></p>
-                <li>Alho com Ervas Finas 190g pote cod 881</li>
-                <li>Alho com Orégano 190g pote cod 882</li>
-                <li>Alho, Cebola e Salsa 190g pote cod 858</li>
-                <li>Alho Picado 190g</li>
-                <li>Alho Picado 1kg</li>
-                <li>Alho em Pasta 190g cod 968</li>
-                <li>Alho em Pasta 1kg</li>
-                <li>Alho, Salsa e Páprica 190g pote cod 880</li>
-                <li>Molho Caseiro para Frango 150ml cod 12264</li>
-                <li>Molho Caseiro para Frango 900ml cod 12235</li>
-                <li>Molho de Alho, Cebola e Salsa 150ml cod 828</li>
-                <li>Molho de Alho, Cebola e Salsa 900ml cod 1079</li>
-                <li>Molho de Alho com Chimichurri 150ml cod 831</li>
-                <li>Molho de Alho com Chimichurri 900ml cod 1078</li>
-                <li>Molho de Alho 150ml cod 875</li>
-                <li>Molho de Alho 900ml cod 916</li>
-                <li>Molho de Pimenta 150ml cod 874</li>
-                <li>Molho de Pimenta 900ml cod 915</li>
-                <li>Molho de Pimenta Malagueta 70g cod 878</li>
-                <li>Molho de Cebola Defumada 150ml cod 12265</li>
-                <li>Molho de Cebola Defumada 900ml cod 12276</li>
-                <li>Molho Inglês 150ml cod 876</li>
-                <li>Molho Inglês 900ml cod 891</li>
-                <li>Molho Shoyu 150ml cod 877</li>
-                <li>Molho Shoyu 900ml cod 914</li>
-                <li>Molho de Pimenta Defumada 150ml cod 833</li><p></p>
-                
-                <h2>SAIS</h2><p></p>
-                <li>Sal Marinho 1kg</li>
-                <li>Sal Completo sem Pimenta 500g</li>
-                <li>Sal Completo com Pimenta 500g cod 12027</li>
-                <li>Sal para Churrasco sem Pimenta 1kg</li>
-                <li>Sal para Churrasco com Pimenta 1kg</li>
-                <li>Sal para Churrasco 500g</li>
-                <li>Sal para Galeto sem Pimenta 1kg cod 1039</li>
-                <li>Sal para Galeto sem Pimenta 500g</li>
-                <li>Sal para Galeto com Pimenta 500g cod 913</li>
-                <li>Tempero Alho e Sal 1,01kg cod 1042</li>
-                <li>Tempero Completo com Pimenta 1,01kg cod 1040</li>
-                <li>Tempero Completo sem Pimenta 1,01kg cod 1041</li>
-                <li>Tempero para Aves 1,01kg cod 12138</li>
-                <li>Tempero Alho e Sal 250g cod 872</li>
-                <li>Tempero Completo com Pimenta 250g cod 869</li>
-                <li>Tempero Completo sem Pimenta 250g cod 870</li>
-                <li>Tempero para Aves 250g cod 871</li>
-                <li>Parrilla Alho 600g cod 12578</li>
-                <li>Parrilla Chimichurri 600g cod 12574</li>
-                <li>Parrilha Cordeiro 600g cod 1441</li>
-                <li>Parrilla Lemon Pepper 600g cod 12579</li>
-                <li>Parrilla Tradicional 600g cod 12575</li><p></p>
-
-                <h2>TAGS</h2><p></p>
-                <li>Tag Açafrão 20g cod 568</li>
-                <li>Tag Adobo 20g cod 636</li>
-                <li>Tag Alecrim 15g cod 102</li>
-                <li>Tag Alho, Cebola e Salsa 20g cod 803</li>
-                <li>Tag Alho, Cebola e Salsa Defumado 20g cod 12326</li>
-                <li>Tag Alho Granulado 30g cod 1246</li>
-                <li>Tag Alho em Pó 30g cod 12383</li>
-                <li>Tag Amaciante de Carne 30g cod 12045</li>
-                <li>Tag Anis Estrelado 15g cod 104</li>
-                <li>Tag Boldo 10g cod 180</li>
-                <li>Tag Camomila 12g cod 112</li>
-                <li>Tag Canela em Pó 25g cod 107</li>
-                <li>Tag Canela em Casca 20g cod 113</li>
-                <li>Tag Capim Cidro 15g cod 184</li>
-                <li>Tag Carqueja</li>
-                <li>Tag Cavalinha 10g cod 1240</li>
-                <li>Tag Cebola Granulada 20g cod 12043</li>
-                <li>Tag Chá Verde 15g cod 202</li>
-                <li>Tag Chimichurri 20g cod 1076</li>
-                <li>Tag Chimichurri Defumado 20g cod 12325</li>
-                <li>Tag Chimichurri sem Pimenta 20g cod 782</li>
-                <li>Tag Coentro 30g cod 911</li>
-                <li>Tag Cominho em Pó 30g cod 243</li>
-                <li>Tag Cominho em Grão 30g cod 1244</li>
-                <li>Tag Composto para Chimarrão 20g cod 115</li>
-                <li>Tag Cravo 15g cod 122</li>
-                <li>Tag Curry cod 12</li>
-                <li>Tag Endro 25g cod 79</li>
-                <li>Tag Erva Doce 25g cod 74</li>
-                <li>Tag Ervas Finas 20g 578</li>
-                <li>Tag Fumaça em Pó 20g cod 12044</li>
-                <li>Tag Funcho 20g cod 80</li>
-                <li>Tag Gengibre Raíz 20g cod 209</li>
-                <li>Tag Gengibre em Pó 20g cod 961</li>
-                <li>Tag Guaco 10g cod 127</li>
-                <li>Tag Hibisco 15g cod 253</li>
-                <li>Tag Hortelã 10g cod 175</li>
-                <li>Tag Lemon Pepper 20g cod 12263</li>
-                <li>Tag Limão e Ervas Finas cod 29</li>
-                <li>Tag Louro 10g cod 128</li>
-                <li>Tag Macela 7g cod 109</li>
-                <li>Tag Malva 7g cod 213</li>
-                <li>Tag Manjericão 15g cod 88</li>
-                <li>Tag Manjerona 10g cod 84</li>
-                <li>Tag Melissa 10g cod 129</li>
-                <li>Tag Mix de Pimentas 10g cod 12557</li>
-                <li>Tag Noz Moscada Moida 15g cod 131</li>
-                <li>Tag Noz Moscada em Grão 15g cod 130</li>
-                <li>Tag Orégano 15g cod 132</li>
-                <li>Tag Orégano 40g cod 886</li>
-                <li>Tag Orégano 50g cod 1489</li>
-                <li>Tag Páprica Defumada 20g cod 657</li>
-                <li>Tag Páprica Doce 30g cod 204</li>
-                <li>Tag Páprica Picante 30g cod 205</li>
-                <li>Tag Pimenta Calabresa 20g cod 561</li>
-                <li>Tag Pimenta Preta em Grão 25g cod 133</li>
-                <li>Tag Pimenta Preta em Pó 20g cod 134</li>
-                <li>Tag Pimenta Branca Moída em Pó 30g cod 793</li>
-                <li>Tag Pimenta Rosa 10g cod 12554</li>
-                <li>Tag Pimenta Síria 20g cod 654</li>
-                <li>Tag Salsa 15g cod 211</li>
-                <li>Tag Sálvia 15g cod 138</li>
-                <li>Tag Tempera Tudo 20g cod 651</li>
-                <li>Tag Tempero Baiano 20g cod 655</li>
-                <li>Tag Tempero do Chefe 20g cod 652</li>
-                <li>Tag Tempero Feijão Mágico 20g cod 649</li>
-                <li>Tag Tempero Gaúcho 20g cod 12429</li>
-                <li>Tag Tempero para Grelhados 20g cod 650</li>
-                <li>Tag Tempero à Portuguesa 15g cod 12552</li>
-                <li>Tag Tempero à Portuguesa Picante 15g cod 12553</li>
-                <li>Tag Tomilho 20g cod 1228</li>
-                <li>Tag Vinagrete 20g cod 656</li>
-                <li>Composto para Chimarrão 50g cod 68</li>
-                <li>Camomila 50g cod 143</li>
-                <li>Alho, Cebola e Salsa 50g cod 9192</li>
-                <li>Adobo 50g cod 9193</li>
-                <li>Chimichurri 50g cod 9194</li>
-                <li>Tag / Novo Açafrão cod 1295</li>
-                <li>Tag / Novo Adobo cod 1249</li>
-                <li>Tag / Novo Alecrim cod 1250</li>
-                <li>Tag / Novo Alho, Cebola e Salsa cod 1251</li>
-                <li>Tag / Novo Alho, Cebola e Salsa Defumado cod 1252</li>
-                <li>Tag / Novo Alho Granulado cod 1253</li>
-                <li>Tag / Novo Alho em Pó cod 1274</li>
-                <li>Tag / Novo Anis Estrelado cod 1254</li>
-                <li>Tag / Novo Camomila cod 1255</li>
-                <li>Tag / Novo Canela em Casca cod 1256</li>
-                <li>Tag / Novo Canela em Pó cod 1257</li>
-                <li>Tag / Novo Cavalinha cod 1258</li>
-                <li>Tag / Novo Cebola Granulada cod 1259</li>
-                <li>Tag / Novo Chimichurri cod 1261</li>
-                <li>Tag / Novo Chimichurri Defumado cod 1260</li>
-                <li>Tag / Novo Chimichurri sem Pimenta cod 1262</li>
-                <li>Tag / Novo Cominho em Pó cod 1315</li>
-                <li>Tag / Novo Composto para Chimarrão cod 1263</li>
-                <li>Tag / Novo Cravo cod 1275</li>
-                <li>Tag / Novo Curry cod 1276</li>
-                <li>Tag / Novo Erva Doce cod 1277</li>
-                <li>Tag / Novo Ervas Finas cod 1278</li>
-                <li>Tag / Novo Funcho cod 1279</li>
-                <li>Tag / Novo Gengibre em Pó cod 1280</li>
-                <li>Tag / Novo Guaco cod 1281</li>
-                <li>Tag / Novo Hibisco cod 1282</li>
-                <li>Tag / Novo Lemon Pepper cod 1283</li>
-                <li>Tag / Novo Limão e Ervas Finas cod 1284</li>
-                <li>Tag / Novo Louro cod 1285</li>
-                <li>Tag / Novo Macela cod 1286</li>
-                <li>Tag / Novo Malva cod 1264</li>
-                <li>Tag / Novo Oregano cod 1265</li>
-                <li>Tag / Novo Páprica Doce cod 1267</li>
-                <li>Tag / Novo Páprica Defumada cod 1266</li>
-                <li>Tag / Novo Páprica Picante cod 1268</li>
-                <li>Tag / Novo Pimenta Calabresa cod 1269</li>
-                <li>Tag / Novo Pimenta Preta em Grão cod 1270</li>
-                <li>Tag / Novo Pimenta Preta em Pó cod 1271</li>
-                <li>Tag / Novo Salsa cod 1287</li>
-                <li>Tag / Novo Tempera Tudo cod 1289</li>
-                <li>Tag / Novo Tempero Baiano cod 1248</li>
-                <li>Tag / Novo Tempero do Chefe cod 1290</li>
-                <li>Tag / Novo Tempero Feijão Mágico cod 1291</li>
-                <li>Tag / Novo Tempero Gaúcho cod 1292</li>
-                <li>Tag / Novo Tempero p/ Grelhados cod 1293</li>
-                <li>Tag / Novo Tempero à Portuguesa cod 1272</li>
-                <li>Tag / Novo Tempero à Portuguesa Picante cod 1273</li>
-                <li>Tag / Novo Tomilho cod 1294</li>
-                </li>
-                <!-- Exemplo, adicione os demais itens conforme necessário -->
-            </ul>
+    <div id="app">
+        <div class="container">
+            <div class="foods-list">
+                <h2>Lista de Alimentos</h2>
+                <div v-for="(category, categoryName) in foodCategories" :key="categoryName">
+                    <h3>{{ categoryName }}</h3>
+                    <ul>
+                        <li v-for="item in category" :key="item.name">
+                            {{ item.name }}
+                            <button class="add-btn" @click="addItem(item, categoryName)">Adicionar</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- Janela de alimentos adicionados -->
-    <div class="added-foods-container" id="addedFoodsContainer">
-        <div class="added-foods" id="addedFoodsList">
-            <h2>Lista de Faltas</h2>
-            <!-- Itens adicionados serão inseridos aqui -->
-        </div>
-    </div>
-
-    <!-- Observação -->
-    <div class="container">
-        <form
-            id="emailForm"
-            action="https://formspree.io/f/xldrrnpw"
-            method="POST"
-            enctype="multipart/form-data"
-        >
-            <input type="hidden" name="subject" value="Lista de Alimentos Selecionados">
-            <input type="hidden" id="emailContent" name="emailContent">
-            <input type="hidden" id="observation" name="observation">
-
-            <label for="observationText">Observação:</label><br>
-            <textarea id="observationText" name="observationText" rows="4" cols="50"></textarea><br><br>
-
-            <button type="button" onclick="enviarPorEmail()" class="btn-send-email">Enviar</button>
-        </form>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const foodsList = document.getElementById('foodsList');
-            const addedFoodsContainer = document.getElementById('addedFoodsContainer');
-            const addedFoodsList = document.getElementById('addedFoodsList');
-            const searchInput = document.getElementById('searchInput');
-            const foodsTable = document.getElementById('foodsTable');
-
-            // Adicionar evento de clique aos itens da lista de alimentos
-            foodsList.addEventListener('click', function(event) {
-                if (event.target.tagName === 'LI') {
-                    const foodName = event.target.textContent;
-
-                    // Verificar se o alimento já foi adicionado
-                    const itemAlreadyAdded = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
-                    if (itemAlreadyAdded) {
-                        const itemCountSpan = itemAlreadyAdded.querySelector('.item-count');
-                        let itemCount = parseInt(itemCountSpan.textContent);
-                        itemCount += 1;
-                        itemCountSpan.textContent = itemCount;
-                    } else {
-                        // Criar novo item na lista de alimentos adicionados
-                        const newItem = document.createElement('div');
-                        newItem.classList.add('item-row');
-                        newItem.setAttribute('data-name', foodName);
-                        newItem.innerHTML = `
-                            <div class="item-name">${foodName}</div>
-                            <div class="btn-container">
-                                <button class="btn" onclick="removeItems('${foodName}', 6)">-6</button>
-                                <button class="btn" onclick="removeItems('${foodName}', 1)">-1</button>
-                                <div class="item-count">1</div>
-                                <button class="btn" onclick="addMoreItems('${foodName}', 1)">+1</button>
-                                <button class="btn" onclick="addMoreItems('${foodName}', 6)">+6</button>
+        <!-- Itens adicionados -->
+        <div class="added-foods-container" v-show="Object.keys(addedItemsByCategory).some(category => addedItemsByCategory[category].length > 0)">
+            <div class="added-foods">
+                <h2>Itens Adicionados</h2>
+                <template v-for="(items, category) in addedItemsByCategory" :key="category">
+                    <h3>{{ category }}</h3>
+                    <ul>
+                        <li v-for="item in items" :key="item.name" id="item-{{ item.name }}">
+                            {{ item.name }} - {{ item.quantity }}
+                            <div class="quantity-controls">
+                                <button class="control-btn" @click="adjustQuantity(item, category, 1)">+1</button>
+                                <button class="control-btn" @click="adjustQuantity(item, category, -1)">-1</button>
+                                <input type="number" v-model.number="item.quantityToAdd" style="width: 50px;">
+                                <button class="control-btn" @click="increaseQuantityByInput(item)">Adicionar</button>
+                                <button class="control-btn" @click="decreaseBySix(item)" v-if="item.quantity > 6">-6</button>
+                                <button class="control-btn" @click="increaseBySix(item)">+6</button>
+                                <button class="control-btn" @click="increaseBySixItem(item)">+6 Item</button>
                             </div>
-                        `;
-                        addedFoodsList.appendChild(newItem);
-                    }
+                        </li>
+                    </ul>
+                </template>
+            </div>
+        </div>
 
-                    // Mostrar a janela de alimentos adicionados
-                    addedFoodsContainer.style.display = 'block';
-                }
-            });
+        <!-- Formulário de envio por email -->
+        <div>
+            <h2>Enviar por Email</h2>
+            <form id="emailForm" action="/send-email" method="POST">
+                <textarea id="emailContent" name="emailContent" hidden></textarea>
+                <div class="added-items-list">
+                    <h3>Itens Adicionados</h3>
+                    <ul>
+                        <template v-for="(items, category) in addedItemsByCategory" :key="category">
+                            <h4>{{ category }}</h4>
+                            <li v-for="item in items" :key="item.name">
+                                {{ item.name }} - {{ item.quantity }}
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+                <div class="observation">
+                    <label for="observationText">Observação:</label><br>
+                    <textarea id="observationText" name="observationText" rows="4" cols="50"></textarea><br><br>
+                </div>
+                <button type="submit" class="btn-send-email" @click.prevent="enviarPorEmail">Enviar</button>
+            </form>
+        </div>
+    </div>
 
-            // Função para adicionar mais itens de um mesmo tipo
-            window.addMoreItems = function(foodName, count) {
-                const item = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
-                const itemCountSpan = item.querySelector('.item-count');
-                let itemCount = parseInt(itemCountSpan.textContent);
-                itemCount += count;
-                itemCountSpan.textContent = itemCount;
-            };
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    foodCategories: {
+                        Naturais: [
+                            { name: 'Maçã' },
+                            { name: 'Banana' }
+                        ],
+                        Molhos: [
+                            { name: 'Ketchup' },
+                            { name: 'Mostarda' }
+                        ],
+                        Sais: [
+                            { name: 'Sal de Mesa' },
+                            { name: 'Sal Marinho' }
+                        ],
+                        Tags: [
+                            { name: 'Orgânico', quantity: 6 },
+                            { name: 'Sem Glúten', quantity: 6 }
+                        ]
+                    },
+                    addedItems: []
+                };
+            },
+            computed: {
+                addedItemsByCategory() {
+                    const categorizedItems = {
+                        Naturais: [],
+                        Molhos: [],
+                        Sais: [],
+                        Tags: []
+                    };
 
-            // Função para remover itens de um mesmo tipo
-            window.removeItems = function(foodName, count) {
-                const item = addedFoodsList.querySelector(`[data-name="${foodName}"]`);
-                const itemCountSpan = item.querySelector('.item-count');
-                let itemCount = parseInt(itemCountSpan.textContent);
-                if (itemCount <= count) {
-                    addedFoodsList.removeChild(item);
-                } else {
-                    itemCount -= count;
-                    itemCountSpan.textContent = itemCount;
-                }
-            };
-
-            // Filtrar tabela de alimentos conforme a entrada do usuário
-            searchInput.addEventListener('input', function() {
-                const filterValue = searchInput.value.toUpperCase();
-                const rows = foodsTable.getElementsByTagName('tr');
-                for (let i = 0; i < rows.length; i++) {
-                    const td = rows[i].getElementsByTagName('td')[0];
-                    if (td) {
-                        const txtValue = td.textContent || td.innerText;
-                        if (txtValue.toUpperCase().indexOf(filterValue) > -1) {
-                            rows[i].style.display = '';
-                        } else {
-                            rows[i].style.display = 'none';
+                    this.addedItems.forEach(item => {
+                        if (categorizedItems[item.category]) {
+                            categorizedItems[item.category].push(item);
+                            categorizedItems[item.category].sort((a, b) => a.name.localeCompare(b.name));
                         }
-                    }
+                    });
+
+                    return categorizedItems;
                 }
-            });
+            },
+            methods: {
+                addItem(item, category) {
+                    const existingItem = this.addedItems.find(
+                        added => added.name === item.name && added.category === category
+                    );
+
+                    if (existingItem) {
+                        const listItem = document.getElementById(`item-${existingItem.name}`);
+                        if (listItem) {
+                            listItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    } else {
+                        let initialQuantity = 1;
+                        if (category === 'Tags') {
+                            initialQuantity = 6;
+                        }
+                        const newItem = { name: item.name, category, quantity: initialQuantity };
+                        newItem.quantityToAdd = 1;
+                        newItem.quantityToSubtract = 1;
+
+                        this.addedItems.push(newItem);
+                        this.addedItems.sort((a, b) => {
+                            if (a.category === b.category) {
+                                return a.name.localeCompare(b.name);
+                            }
+                            return a.category.localeCompare(b.category);
+                        });
+
+                        setTimeout(() => {
+                            const newItemElement = document.getElementById(`item-${newItem.name}`);
+                            if (newItemElement) {
+                                newItemElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }, 100);
+                    }
+                },
+                adjustQuantity(item, category, change) {
+                    const addedItem = this.addedItems.find(
+                        added => added.name === item.name && added.category === category
+                    );
+
+                    if (addedItem) {
+                        addedItem.quantity += change;
+                    }
+                },
+                increaseQuantityByInput(item) {
+                    const addedItem = this.addedItems.find(
+                        added => added.name === item.name && added.category === item.category
+                    );
+
+                    if (addedItem) {
+                        addedItem.quantity += addedItem.quantityToAdd;
+                        addedItem.quantityToAdd = 1;
+                    }
+                },
+                decreaseBySix(item) {
+                    const addedItem = this.addedItems.find(
+                        added => added.name === item.name && added.category === item.category
+                    );
+
+                    if (addedItem && addedItem.quantity > 6) {
+                        addedItem.quantity -= 6;
+                    }
+                },
+                increaseBySix(item) {
+                    const addedItem = this.addedItems.find(
+                        added => added.name === item.name && added.category === item.category
+                    );
+
+                    if (addedItem) {
+                        addedItem.quantity += 6;
+                    }
+                },
+                increaseBySixItem(item) {
+                    const addedItem = this.addedItems.find(
+                        added => added.name === item.name && added.category === item.category
+                    );
+
+                    if (addedItem) {
+                        addedItem.quantity += 6;
+                    }
+                },
+                enviarPorEmail() {
+                    const observation = document.getElementById('observationText').value.trim();
+
+                    let emailContent = '';
+                    Object.keys(this.addedItemsByCategory).forEach(category => {
+                        if (this.addedItemsByCategory[category].length > 0) {
+                            emailContent += `${category}:\n`;
+                            this.addedItemsByCategory[category].forEach(item => {
+                                emailContent += `${item.name}: ${item.quantity}\n`;
+                            });
+                        }
+                    });
+
+                    if (observation !== '') {
+                        emailContent += `\nObservação:\n${observation}`;
+                    }
+
+                    document.getElementById('emailContent').value = emailContent;
+                    document.getElementById('observation').value = observation;
+
+                    document.getElementById('emailForm').submit();
+                }
+            }
         });
-
-        // Função para enviar a lista por email
-
-       // Função para enviar a lista por email
-function enviarPorEmail() {
-    const addedFoods = document.querySelectorAll('.added-foods .item-row');
-    const observation = document.getElementById('observationText').value;
-
-    let categorizedItems = {
-        NATURAIS: [],
-        MOLHOS: [],
-        SAIS: [],
-        TAGS: []
-    };
-
-    // Organizar os itens por categoria
-    addedFoods.forEach(function(item) {
-        const foodName = item.querySelector('.item-name').textContent;
-        const itemCount = item.querySelector('.item-count').textContent;
-
-        // Determinar a categoria do item adicionado
-        if (foodName.startsWith('Molho')) {
-            categorizedItems.MOLHOS.push({ name: foodName, count: itemCount });
-        } else if (foodName.startsWith('Sal')) {
-            categorizedItems.SAIS.push({ name: foodName, count: itemCount });
-        } else if (foodName.startsWith('Tag')) {
-            categorizedItems.TAGS.push({ name: foodName, count: itemCount });
-        } else {
-            categorizedItems.NATURAIS.push({ name: foodName, count: itemCount });
-        }
-    });
-
-    // Ordenar os itens dentro de cada categoria por nome
-    Object.keys(categorizedItems).forEach(function(category) {
-        categorizedItems[category].sort(function(a, b) {
-            return a.name.localeCompare(b.name);
-        });
-    });
-
-    // Construir o conteúdo do email categorizado
-    let emailContent = '';
-    ['NATURAIS', 'MOLHOS', 'SAIS', 'TAGS'].forEach(function(category) {
-        if (categorizedItems[category].length > 0) {
-            emailContent += `\n${category}:\n`;
-            categorizedItems[category].forEach(function(item) {
-                emailContent += `${item.name}: ${item.count}\n`;
-            });
-        }
-    });
-
-    // Adicionar observação se houver
-    if (observation.trim() !== '') {
-        emailContent += `\nObservação:\n${observation}`;
-    }
-
-    // Atualizar o campo hidden do formulário
-    document.getElementById('emailContent').value = emailContent;
-    document.getElementById('observation').value = observation;
-
-    // Enviar o formulário para Formspree
-    document.getElementById('emailForm').submit();
-}
-
-
     </script>
 </body>
 </html>
