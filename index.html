@@ -105,12 +105,12 @@
                 </ul>
             </div>
         </div>
-        <div class="added-items">
+        <div class="added-items" ref="addedItems">
             <h2>Itens Adicionados</h2>
             <div v-for="(items, category) in addedItemsByCategory" :key="category">
                 <h3>{{ category }}</h3>
                 <ul>
-                    <li v-for="item in items" :key="item.name">
+                    <li v-for="item in items" :key="item.name" :id="`added-item-${item.name}`">
                         <span>{{ item.name }}: {{ item.quantity }}</span>
                         <div class="quantity-controls">
                             <button class="control-btn" @click="adjustQuantity(item, category, -6)">-6</button>
@@ -181,10 +181,13 @@
                     );
 
                     if (existingItem) {
-                        const listItem = document.getElementById(`added-item-${existingItem.name + this.addedItems.indexOf(existingItem)}`);
-                        if (listItem) {
-                            listItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
+                        // Se o item já existe, rola até ele
+                        this.$nextTick(() => {
+                            const listItem = document.getElementById(`added-item-${existingItem.name}`);
+                            if (listItem) {
+                                listItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        });
                     } else {
                         let initialQuantity = 1;
                         if (category === 'Tags') {
@@ -201,12 +204,10 @@
                             return a.category.localeCompare(b.category);
                         });
 
-                        setTimeout(() => {
-                            const newItemElement = document.getElementById(`added-item-${newItem.name + this.addedItems.indexOf(newItem)}`);
-                            if (newItemElement) {
-                                newItemElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            }
-                        }, 100);
+                        this.$nextTick(() => {
+                            const newItemElement = this.$refs.addedItems;
+                            newItemElement.scrollTop = newItemElement.scrollHeight;
+                        });
                     }
                 },
                 adjustQuantity(item, category, change) {
