@@ -390,7 +390,7 @@
                     if (addedItem) {
                         addedItem.quantity += change;
                         if (addedItem.quantity < 1) {
-                            addedItem.quantity = 1;
+                            this.deleteItem(addedItem);
                         }
                     }
                 },
