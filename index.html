@@ -174,7 +174,7 @@
                 return {
                     foodCategories: {
                         Naturais: [
-                          { name: 'Açucar Mascavo 1kg' },
+                        { name: 'Açucar Mascavo 1kg' },
                     { name: 'Açucar Mascavo 500g' },
                     { name: 'Anéis de Frutas 120g' },
                     { name: 'Aveia em Flocos Finos 250g' },
@@ -366,7 +366,57 @@
                     { name: 'Tag Tempero à Portuguesa Picante', quantity: 6 },
                     { name: 'Tag Tomilho', quantity: 6 },
                     { name: 'Tag Vinagrete', quantity: 6 }
+                        ],
+                       
+                     Tags_Novos: [
+                    { name: 'Açafrão', quantity: 6 },
+                    { name: 'Adobo', quantity: 6 },
+                    { name: 'Alecrim', quantity: 6 },
+                    { name: 'Alho, Cebola e Salsa', quantity: 6 },
+                    { name: 'Alho, Cebola e Salsa Defumado', quantity: 6 },
+                    { name: 'Alho Granulado', quantity: 6 },
+                    { name: 'Anis Estrelado', quantity: 6 },
+                    { name: 'Camomila', quantity: 6 },
+                    { name: 'Canela em Pó', quantity: 6 },
+                    { name: 'Canela em Casca', quantity: 6 },
+                    { name: 'Cavalinha', quantity: 6 },
+                    { name: 'Cebola Granulada', quantity: 6 },
+                    { name: 'Chimichurri', quantity: 6 },
+                    { name: 'Chimichurri Defumado', quantity: 6 },
+                    { name: 'Chimichurri sem Pimenta', quantity: 6 },
+                    { name: 'Cominho em Pó', quantity: 6 },
+                    { name: 'Composto para Chimarrão', quantity: 6 },
+                    { name: 'Cravo', quantity: 6 },
+                    { name: 'Curry', quantity: 6 },
+                    { name: 'Erva Doce', quantity: 6 },
+                    { name: 'Ervas Finas', quantity: 6 },
+                    { name: 'Funcho', quantity: 6 },
+                    { name: 'Gengibre em Pó', quantity: 6 },
+                    { name: 'Guaco', quantity: 6 },
+                    { name: 'Hibisco', quantity: 6 },
+                    { name: 'Lemon Pepper', quantity: 6 },
+                    { name: 'Limão e Ervas Finas', quantity: 6 },
+                    { name: 'Louro', quantity: 6 },
+                    { name: 'Macela', quantity: 6 },
+                    { name: 'Malva', quantity: 6 },
+                    { name: 'Orégano', quantity: 6 },
+                    { name: 'Páprica Defumada', quantity: 6 },
+                    { name: 'Páprica Doce', quantity: 6 },
+                    { name: 'Páprica Picante', quantity: 6 },
+                    { name: 'Pimenta Calabresa', quantity: 6 },
+                    { name: 'Pimenta Preta em Grão', quantity: 6 },
+                    { name: 'Pimenta Preta em Pó', quantity: 6 },
+                    { name: 'Salsa', quantity: 6 },
+                    { name: 'Tempera Tudo', quantity: 6 },
+                    { name: 'Tempero Baiano', quantity: 6 },
+                    { name: 'Tempero do Chefe', quantity: 6 },
+                    { name: 'Tempero Gaúcho', quantity: 6 },
+                    { name: 'Tempero para Grelhados', quantity: 6 },
+                    { name: 'Tempero à Portuguesa', quantity: 6 },
+                    { name: 'Tempero à Portuguesa Picante', quantity: 6 },
+                    { name: 'Tomilho', quantity: 6 }    
                         ]
+                    
                     },
                     addedItems: [],
                     observation: '' // Inicializa a observação como uma string vazia
@@ -378,7 +428,8 @@
                         Naturais: [],
                         Molhos: [],
                         Sais: [],
-                        Tags: []
+                        Tags: [],
+                        Tags_Novos: []
                     };
 
                     this.addedItems.forEach(item => {
@@ -450,15 +501,50 @@
                         this.addedItems.splice(index, 1);
                     }
                 },
-                enviarPorEmail() {
-                    const itemsData = {
-                        items: this.addedItems,
-                        observation: this.observation.trim() // Remove espaços em branco extras
-                    };
+                async enviarPorEmail() {
+                    // Formata os dados como texto simples
+                    let emailContent = 'Itens:\n';
+                    for (const [category, items] of Object.entries(this.addedItemsByCategory)) {
+                        if (items.length > 0) {
+                            emailContent += `\n${category}:\n`;
+                            items.forEach(item => {
+                                emailContent += `${item.name}: ${item.quantity}\n`;
+                            });
+                        }
+                    }
+
+                    const formattedObservation = this.observation.trim();
+                    emailContent += `\nObservações:\n${formattedObservation}`;
+
+                    const formData = new FormData();
+                    formData.append('items', emailContent);
+
+                    try {
+                        const response = await fetch('https://formspree.io/f/xkgwnrgp', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        if (response.ok) {
+                            alert('Itens enviados com sucesso!');
+                        } else {
+                            const data = await response.json();
+                            if (data.errors) {
+                                alert(data.errors.map(error => error.message).join(', '));
+                            } else {
+                                alert('Erro ao enviar os itens.');
+                            }
+                        }
+                    } catch (error) {
+                        alert('Erro ao enviar os itens: ' + error.message);
+                    }
 
                     // Salvar os itens e a observação no localStorage
                     localStorage.setItem('addedItems', JSON.stringify(this.addedItems));
-                    localStorage.setItem('observation', itemsData.observation);
+                    localStorage.setItem('observation', formattedObservation);
 
                     // Redirecionar para itensadd.html
                     window.location.href = 'itensadd.html';
