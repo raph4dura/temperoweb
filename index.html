@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Alimentos Naturais</title>
+    <meta charset="utf-8">
+    <title>Lista de Itens</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <style>
         /* Reset and base styles */
         * {
@@ -20,8 +20,10 @@
         }
 
         .container {
+            display: flex;
+            justify-content: space-between;
             max-width: 1200px;
-            margin: 20px auto;
+            margin: 0 auto;
             background-color: #000;
             padding: 20px;
             border: 1px solid #fff;
@@ -29,11 +31,11 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
-        .foods-list {
-            padding: 20px;
+        .list, .added-items {
+            width: 48%;
         }
 
-        .foods-list h2 {
+        .foods-list h2, .added-items h2 {
             margin-top: 0;
         }
 
@@ -57,8 +59,7 @@
             background-color: #444;
         }
 
-        .add-btn,
-        .control-btn {
+        .add-btn, .control-btn {
             padding: 8px 16px;
             background-color: #007bff;
             color: #fff;
@@ -67,144 +68,105 @@
             cursor: pointer;
         }
 
-        .add-btn:hover,
-        .control-btn:hover {
+        .add-btn:hover, .control-btn:hover {
             background-color: #0056b3;
         }
 
-        .added-foods-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            bottom: 20px;
-            width: 300px;
-            background-color: #000;
-            border: 1px solid #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-            overflow-y: auto;
-            display: none;
-            z-index: 1000;
-            color: #fff;
+        .quantity-controls {
+            display: flex;
+            gap: 5px;
         }
 
-        .added-foods {
-            padding: 20px;
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .list, .added-items {
+                width: 100%;
+                margin-bottom: 20px;
+            }
         }
 
-        .added-foods h2 {
-            margin-top: 0;
-        }
-
-        .btn-send-email {
+        /* Observation Box */
+        .observation-box {
             margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #222;
+        }
+
+        .observation-box textarea {
+            width: 100%;
+            height: 100px;
+            resize: vertical;
+            padding: 8px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .send-btn {
+            margin-top: 10px;
             padding: 10px 20px;
-            background-color: #007bff;
+            background-color: #28a745;
             color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
 
-        .btn-send-email:hover {
-            background-color: #0056b3;
-        }
-
-        #observationText {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #fff;
-            border-radius: 4px;
-            resize: vertical;
-            color: #000;
-        }
-
-        .quantity-controls {
-            margin-top: 4px;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .added-foods-container {
-                width: 100%;
-                max-width: 100%;
-                left: 0;
-                right: 0;
-                border-radius: 0;
-            }
+        .send-btn:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
-    <div id="app">
-        <div class="container">
-            <div class="foods-list">
-                <h2>Lista de Alimentos</h2>
-                <div v-for="(category, categoryName) in foodCategories" :key="categoryName">
-                    <h3>{{ categoryName }}</h3>
-                    <ul>
-                        <li v-for="item in category" :key="item.name">
-                            {{ item.name }}
-                            <button class="add-btn" @click="addItem(item, categoryName)">Adicionar</button>
-                        </li>
-                    </ul>
-                </div>
+    <div id="app" class="container">
+        <div class="list">
+            <h2>Lista de Itens</h2>
+            <div v-for="(items, category) in foodCategories" :key="category">
+                <h3>{{ category }}</h3>
+                <ul>
+                    <li v-for="item in items" :key="item.name">
+                        <span>{{ item.name }}</span>
+                        <button class="add-btn" @click="addItem(item, category)">Adicionar</button>
+                    </li>
+                </ul>
             </div>
         </div>
 
-        <!-- Itens adicionados -->
-        <div class="added-foods-container" v-show="Object.keys(addedItemsByCategory).some(category => addedItemsByCategory[category].length > 0)">
-            <div class="added-foods">
-                <h2>Itens Adicionados</h2>
-                <template v-for="(items, category) in addedItemsByCategory" :key="category">
-                    <h3>{{ category }}</h3>
-                    <ul>
-                        <li v-for="(item, index) in items" :key="index" :id="'added-item-' + item.name + index">
-                            {{ item.name }} - {{ item.quantity }}
-                            <div class="quantity-controls">
-                                <button class="control-btn" @click="adjustQuantity(item, category, 1)">+1</button>
-                                <button class="control-btn" @click="increaseBySix(item)">+6</button>
-                                <button class="control-btn" @click="deleteItem(item)">
-                                    <img src="delete-icon.png" alt="Delete" style="width: 16px; height: 16px;">
-                                </button>
-                            </div>
-                        </li>
-                    </ul>
-                </template>
+        <div class="added-items" ref="addedItemsContainer">
+            <h2>Itens Adicionados</h2>
+            <div v-for="(items, category) in addedItemsByCategory" :key="category">
+                <h3>{{ category }}</h3>
+                <ul>
+                    <li v-for="item in items" :key="item.name" :id="`added-item-${item.name}`">
+                        <span>{{ item.name }}: {{ item.quantity }}</span>
+                        <div class="quantity-controls">
+                            <button class="control-btn" @click="adjustQuantity(item, category, -6)">-6</button>
+                            <button class="control-btn" @click="adjustQuantity(item, category, -1)">-1</button>
+                            <button class="control-btn" @click="adjustQuantity(item, category, 1)">+1</button>
+                            <button class="control-btn" @click="adjustQuantity(item, category, 6)">+6</button>
+                        </div>
+                    </li>
+                </ul>
             </div>
-        </div>
 
-        <!-- Formulário de envio por email -->
-        <div>
-            <h2>Enviar por Email</h2>
-            <form id="emailForm" action="/send-email" method="POST">
-                <textarea id="emailContent" name="emailContent" hidden></textarea>
-                <div class="added-items-list">
-                    <h3>Itens Adicionados</h3>
-                    <ul>
-                        <template v-for="(items, category) in addedItemsByCategory" :key="category">
-                            <h4>{{ category }}</h4>
-                            <li v-for="item in items" :key="item.name">
-                                {{ item.name }} - {{ item.quantity }}
-                            </li>
-                        </template>
-                    </ul>
-                </div>
-                <div class="observation">
-                    <label for="observationText">Observação:</label><br>
-                    <textarea id="observationText" name="observationText" rows="4" cols="50"></textarea><br><br>
-                </div>
-                <button type="submit" class="btn-send-email" @click.prevent="enviarPorEmail">Enviar</button>
-            </form>
+            <!-- Observations Box -->
+            <div class="observation-box">
+                <textarea id="observationText" placeholder="Observações adicionais..." rows="4" v-model="observation"></textarea>
+                <button class="send-btn" @click="enviarPorEmail">Enviar Itens</button>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script>
         new Vue({
             el: '#app',
@@ -212,7 +174,7 @@
                 return {
                     foodCategories: {
                         Naturais: [
-                        { name: 'Açucar Mascavo 1kg' },
+                          { name: 'Açucar Mascavo 1kg' },
                     { name: 'Açucar Mascavo 500g' },
                     { name: 'Anéis de Frutas 120g' },
                     { name: 'Aveia em Flocos Finos 250g' },
@@ -406,7 +368,8 @@
                     { name: 'Tag Vinagrete', quantity: 6 }
                         ]
                     },
-                    addedItems: []
+                    addedItems: [],
+                    observation: '' // Inicializa a observação como uma string vazia
                 };
             },
             computed: {
@@ -421,37 +384,41 @@
                     this.addedItems.forEach(item => {
                         if (categorizedItems[item.category]) {
                             categorizedItems[item.category].push(item);
-                            // Ordenar os itens dentro da categoria
-                            categorizedItems[item.category].sort((a, b) => a.name.localeCompare(b.name));
                         }
+                    });
+
+                    // Ordenar os itens dentro de cada categoria por nome
+                    Object.keys(categorizedItems).forEach(category => {
+                        categorizedItems[category].sort((a, b) => a.name.localeCompare(b.name));
                     });
 
                     return categorizedItems;
                 }
             },
             methods: {
-    
                 addItem(item, category) {
                     const existingItem = this.addedItems.find(
                         added => added.name === item.name && added.category === category
                     );
 
                     if (existingItem) {
-                        // Scroll suave para o item na lista de itens adicionados
-                        const listItem = document.getElementById(`added-item-${existingItem.name + this.addedItems.indexOf(existingItem)}`);
-                        if (listItem) {
-                            listItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
+                        // Se o item já existe, rola até ele
+                        this.$nextTick(() => {
+                            const listItem = document.getElementById(`added-item-${existingItem.name}`);
+                            if (listItem) {
+                                listItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        });
                     } else {
                         let initialQuantity = 1;
                         if (category === 'Tags') {
-                            initialQuantity = 6; // Iniciar itens da categoria Tags com 6
+                            initialQuantity = 6;
                         }
                         const newItem = { name: item.name, category, quantity: initialQuantity };
 
                         this.addedItems.push(newItem);
 
-                        // Ordenar os itens novamente após adicionar um novo item
+                        // Ordenar os itens adicionados por categoria e nome
                         this.addedItems.sort((a, b) => {
                             if (a.category === b.category) {
                                 return a.name.localeCompare(b.name);
@@ -459,13 +426,10 @@
                             return a.category.localeCompare(b.category);
                         });
 
-                        // Scroll suave para o novo item adicionado
-                        setTimeout(() => {
-                            const newItemElement = document.getElementById(`added-item-${newItem.name + this.addedItems.indexOf(newItem)}`);
-                            if (newItemElement) {
-                                newItemElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            }
-                        }, 100); // Tempo de espera para garantir que o item foi renderizado
+                        this.$nextTick(() => {
+                            const newItemElement = this.$refs.addedItemsContainer;
+                            newItemElement.scrollTop = newItemElement.scrollHeight;
+                        });
                     }
                 },
                 adjustQuantity(item, category, change) {
@@ -475,16 +439,9 @@
 
                     if (addedItem) {
                         addedItem.quantity += change;
-                    }
-                },
-                increaseBySix(item) {
-            
-                    const addedItem = this.addedItems.find(
-                        added => added.name === item.name && added.category === item.category
-                    );
-
-                    if (addedItem) {
-                        addedItem.quantity += 6;
+                        if (addedItem.quantity < 1) {
+                            this.deleteItem(addedItem);
+                        }
                     }
                 },
                 deleteItem(item) {
@@ -494,29 +451,21 @@
                     }
                 },
                 enviarPorEmail() {
-                    const observation = document.getElementById('observationText').value.trim();
+                    const itemsData = {
+                        items: this.addedItems,
+                        observation: this.observation.trim() // Remove espaços em branco extras
+                    };
 
-                    let emailContent = '';
-                    Object.keys(this.addedItemsByCategory).forEach(category => {
-                        if (this.addedItemsByCategory[category].length > 0) {
-                            emailContent += `${category}:\n`;
-                            this.addedItemsByCategory[category].forEach(item => {
-                                emailContent += `${item.name}: ${item.quantity}\n`;
-                            });
-                        }
-                    });
+                    // Salvar os itens e a observação no localStorage
+                    localStorage.setItem('addedItems', JSON.stringify(this.addedItems));
+                    localStorage.setItem('observation', itemsData.observation);
 
-                    if (observation !== '') {
-                        emailContent += `\nObservação:\n${observation}`;
-                    }
-
-                    document.getElementById('emailContent').value = emailContent;
-                    document.getElementById('observation').value = observation;
-
-                    document.getElementById('emailForm').submit();
+                    // Redirecionar para itensadd.html
+                    window.location.href = 'itensadd.html';
                 }
             }
         });
     </script>
 </body>
 </html>
+
