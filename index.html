@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>Lista de Itens</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <style>
@@ -89,6 +89,42 @@
                 margin-bottom: 20px;
             }
         }
+
+        /* Observation Box */
+        .observation-box {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #222;
+        }
+
+        .observation-box textarea {
+            width: 100%;
+            height: 100px;
+            resize: vertical;
+            padding: 8px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .send-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .send-btn:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -105,7 +141,8 @@
                 </ul>
             </div>
         </div>
-        <div class="added-items" ref="addedItems">
+
+        <div class="added-items" ref="addedItemsContainer">
             <h2>Itens Adicionados</h2>
             <div v-for="(items, category) in addedItemsByCategory" :key="category">
                 <h3>{{ category }}</h3>
@@ -121,6 +158,12 @@
                     </li>
                 </ul>
             </div>
+
+            <!-- Observations Box -->
+            <div class="observation-box">
+                <textarea id="observationText" placeholder="Observações adicionais..." rows="4"></textarea>
+                <button class="send-btn" @click="enviarPorEmail">Enviar Itens</button>
+            </div>
         </div>
     </div>
 
@@ -131,203 +174,30 @@
                 return {
                     foodCategories: {
                         Naturais: [
-                        { name: 'Açucar Mascavo 500g' },
-                    { name: 'Anéis de Frutas 120g' },
-                    { name: 'Aveia em Flocos Finos 250g' },
-                    { name: 'Aveia em Flocos Grossos 250g' },
-                    { name: 'Cacau em Pó 100g' },
-                    { name: 'Chocoboll 220g' },
-                    { name: 'Farelo de Aveia 250g' },
-                    { name: 'Farinha de Aveia 250g' },
-                    { name: 'Farinha de Arroz Branca 500g' },
-                    { name: 'Farinha de Banana Verde 100g' },
-                    { name: 'Farinha de Berinjela 100g' },
-                    { name: 'Farinha de Centeio 500g' },
-                    { name: 'Farinha de Linhaça Dourada 220g' },
-                    { name: 'Farinha de Linhaça Marrom 250g' },
-                    { name: 'Farinha de Maracujá 250g' },
-                    { name: 'Farinha de Soja 250g' },
-                    { name: 'Farinha de Trigo Integral 500g' },
-                    { name: 'Flocos de Arroz 150g' },
-                    { name: 'Flocos de Milho com Açucar 150g' },
-                    { name: 'Flocos de Milho Natural 150g' },
-                    { name: 'Gergelim Descascado' },
-                    { name: 'Gérmen de Trigo 250g' },
-                    { name: 'Granola com Adoçante Diet 1kg' },
-                    { name: 'Granola com Adoçante Diet 250g' },
-                    { name: 'Granola com Canela 250g' },
-                    { name: 'Granola com Côco 1kg' },
-                    { name: 'Granola com Côco 250g' },
-                    { name: 'Granola Natural Light 1kg' },
-                    { name: 'Granola Natural Light 250g' },
-                    { name: 'Granola Docemel 1kg' },
-                    { name: 'Granola Docemel 250g' },
-                    { name: 'Granola Tradicional 1kg' },
-                    { name: 'Granola Tradicional 250g' },
-                    { name: 'Proteína de Soja Escura 250g' },
-                    { name: 'Proteína de Soja Graúda 250g' },
-                    { name: 'Proteína de Soja Miúda Clara 250g' },
-                    { name: 'Ameixa Preta sem Caroço 100g' },
-                    { name: 'Ameixa Preta com Caroço 100g' },
-                    { name: 'Ameixa sem Caroço POTE' },
-                    { name: 'Ameixa com Caroço POTE' },
-                    { name: 'Frutas Cristalizadas Sachê' },
-                    { name: 'Frutas Cristalizadas POTE' },
-                    { name: 'Tag Ameixa Preta sem Caroço' },
-                    { name: 'Tag Ameixa Preta com Caroço' },
-                    { name: 'Tag Uva Passa Preta' },
-                    { name: 'Uva Passa Preta Sachê' },
-                    { name: 'Uva Passa Branca Sachê' },
-                    { name: 'Uva Passa Preta POTE' },
-                    { name: 'Uva Passa Branca POTE' },
-                    { name: 'Côco Seco Ralado Grosso 100g' },
-                    { name: 'Côco Seco Ralado Fino 100g' },
-                    { name: 'Côco Seco Ralado Adoçado 100g' },
-                    { name: 'Semente de Chia 100g' },
-                    { name: 'Quinoa em Flocos 100g' },
-                    { name: 'Quinoa em Grãos 100g' },
-                    { name: 'Levedo de Cerveja' },
-                    { name: 'Semente de Girassol 100g' },
-                    { name: 'Semente de Linhaça Dourada 200g' },
-                    { name: 'Semente de Linhaça Marrom 250g' },
-                    { name: 'Soja em Grão 500g' },
-                    { name: 'Trigo em Grão 500g' },
-                    { name: 'Alho com Ervas Finas 190g pote' },
-                    { name: 'Alho com Orégano 190g pote' },
-                    { name: 'Alho, Cebola e Salsa 190g pote' },
-                    { name: 'Alho Picado 190g' },
-                    { name: 'Alho Picado 1kg' },
-                    { name: 'Alho em Pasta 190g' },
-                    { name: 'Alho em Pasta 1kg' },
-                    { name: 'Alho, Salsa e Páprica 190g pote' },
-                    { name: 'Açucar de Baunilha 80g' },
-                    { name: 'Açucar Colorido Vermelho' },
-                    { name: 'Açucar Colorido Rosa' },
-                    { name: 'Açucar Colorido Verde' },
-                    { name: 'Açucar Colorido Azul' },
-                    { name: 'Açucar Colorido Amarelo' },
-                    { name: 'Confeito Miçanga Colorido' },
-                    { name: 'Confeito Granulado Colorido' },
-                    { name: 'Chocolate Granulado 80g' },
-                    { name: 'Chocolate Granulado 200g' },
-                    { name: 'Chocolate Granulado Misto 80g' },
-                    { name: 'Chocolate Granulado Misto 200g' },
-                    { name: 'Sal Amoníaco' },
-                    { name: 'Colorau 500g' },
-                    { name: 'Colorau 90g' },
-                    { name: 'Bicarbonato de Sódio 500g' },
-                    { name: 'Bicarbonato de Sódio 250g' },
-                    { name: 'Bicarbonato de Sódio 90g' }
-                ],
-                Molhos: [
-                    { name: 'Molho de Alho 150ml' },
-                    { name: 'Molho de Alho 900ml' },
-                    { name: 'Molho de Pimenta 150ml' },
-                    { name: 'Molho de Pimenta 900ml' },
-                    { name: 'Molho de Pimenta Malagueta 70g' },
-                    { name: 'Molho de Cebola Defumada 150ml' },
-                    { name: 'Molho de Cebola Defumada 900ml' },
-                    { name: 'Molho Inglês 150ml' },
-                    { name: 'Molho Inglês 900ml' },
-                    { name: 'Molho Shoyu 150ml' },
-                    { name: 'Molho Shoyu 900ml' },
-                    { name: 'Molho de Pimenta Defumada 150ml' }
-                ],
-                Sais: [
-                    { name: 'Sal Marinho 1kg' },
-                    { name: 'Sal Completo sem Pimenta 500g' },
-                    { name: 'Sal Completo com Pimenta 500g' },
-                    { name: 'Sal para Churrasco sem Pimenta 1kg' },
-                    { name: 'Sal para Churrasco com Pimenta 1kg' },
-                    { name: 'Sal para Churrasco 500g' },
-                    { name: 'Sal para Galeto sem Pimenta 1kg' },
-                    { name: 'Sal para Galeto sem Pimenta 500g' },
-                    { name: 'Sal para Galeto com Pimenta 500g' },
-                    { name: 'Tempero Alho e Sal 1,01kg' },
-                    { name: 'Tempero Completo com Pimenta 1,01kg' },
-                    { name: 'Tempero Completo sem Pimenta 1,01kg' },
-                    { name: 'Tempero para Aves 1,01kg' },
-                    { name: 'Tempero Alho e Sal 250g' },
-                    { name: 'Tempero Completo com Pimenta 250g' },
-                    { name: 'Tempero Completo sem Pimenta 250g' },
-                    { name: 'Tempero para Aves 250g' },
-                    { name: 'Parrilla Alho 600g' },
-                    { name: 'Parrilla Chimichurri 600g' },
-                    { name: 'Parrilha Cordeiro 600g' },
-                    { name: 'Parrilla Lemon Pepper 600g' },
-                    { name: 'Parrilla Tradicional 600g' }
-                        
+                            { name: 'Açucar Mascavo 500g' },
+                            { name: 'Anéis de Frutas 120g' },
+                            { name: 'Bicarbonato de Sódio 90g' }
+                        ],
+                        Molhos: [
+                            { name: 'Molho de Alho 150ml' },
+                            { name: 'Molho de Alho 900ml' },
+                            { name: 'Molho de Pimenta Defumada 150ml' }
+                        ],
+                        Sais: [
+                            { name: 'Sal Marinho 1kg' },
+                            { name: 'Sal Completo sem Pimenta 500g' },
+                            { name: 'Parrilla Tradicional 600g' }
                         ],
                         Tags: [
-                        { name: 'Tag Açafrão', quantity: 6 },
-                    { name: 'Tag Adobo', quantity: 6 },
-                    { name: 'Tag Alecrim', quantity: 6 },
-                    { name: 'Tag Alho, Cebola e Salsa', quantity: 6 },
-                    { name: 'Tag Alho, Cebola e Salsa Defumado', quantity: 6 },
-                    { name: 'Tag Alho Granulado', quantity: 6 },
-                    { name: 'Tag Amaciante de Carne', quantity: 6 },
-                    { name: 'Tag Anis Estrelado', quantity: 6 },
-                    { name: 'Tag Boldo', quantity: 6 },
-                    { name: 'Tag Camomila', quantity: 6 },
-                    { name: 'Tag Canela em Pó', quantity: 6 },
-                    { name: 'Tag Canela em Casca', quantity: 6 },
-                    { name: 'Tag Capim Cidro', quantity: 6 },
-                    { name: 'Tag Carqueja', quantity: 6 },
-                    { name: 'Tag Cavalinha', quantity: 6 },
-                    { name: 'Tag Cebola Granulada', quantity: 6 },
-                    { name: 'Tag Chá Verde', quantity: 6 },
-                    { name: 'Tag Chimichurri', quantity: 6 },
-                    { name: 'Tag Chimichurri Defumado', quantity: 6 },
-                    { name: 'Tag Chimichurri sem Pimenta', quantity: 6 },
-                    { name: 'Tag Coentro em Pó', quantity: 6 },
-                    { name: 'Tag Cominho em Pó', quantity: 6 },
-                    { name: 'Tag Composto para Chimarrão', quantity: 6 },
-                    { name: 'Tag Cravo', quantity: 6 },
-                    { name: 'Tag Curry', quantity: 6 },
-                    { name: 'Tag Endro', quantity: 6 },
-                    { name: 'Tag Erva Doce', quantity: 6 },
-                    { name: 'Tag Ervas Finas', quantity: 6 },
-                    { name: 'Tag Funcho', quantity: 6 },
-                    { name: 'Tag Gengibre Raíz', quantity: 6 },
-                    { name: 'Tag Gengibre em Pó', quantity: 6 },
-                    { name: 'Tag Guaco', quantity: 6 },
-                    { name: 'Tag Hibisco', quantity: 6 },
-                    { name: 'Tag Hortelã', quantity: 6 },
-                    { name: 'Tag Lemon Pepper', quantity: 6 },
-                    { name: 'Tag Limão e Ervas Finas', quantity: 6 },
-                    { name: 'Tag Louro', quantity: 6 },
-                    { name: 'Tag Macela', quantity: 6 },
-                    { name: 'Tag Malva', quantity: 6 },
-                    { name: 'Tag Manjericão', quantity: 6 },
-                    { name: 'Tag Manjerona', quantity: 6 },
-                    { name: 'Tag Melissa', quantity: 6 },
-                    { name: 'Tag Noz Moscada Moída', quantity: 6 },
-                    { name: 'Tag Noz Moscada em Grão', quantity: 6 },
-                    { name: 'Tag Orégano', quantity: 6 },
-                    { name: 'Tag Páprica Defumada', quantity: 6 },
-                    { name: 'Tag Páprica Doce', quantity: 6 },
-                    { name: 'Tag Páprica Picante', quantity: 6 },
-                    { name: 'Tag Pimenta Calabresa', quantity: 6 },
-                    { name: 'Tag Pimenta Preta em Grão', quantity: 6 },
-                    { name: 'Tag Pimenta Preta em Pó', quantity: 6 },
-                    { name: 'Tag Pimenta Branca em Pó', quantity: 6 },
-                    { name: 'Tag Salsa', quantity: 6 },
-                    { name: 'Tag Sálvia', quantity: 6 },
-                    { name: 'Tag Tempera Tudo', quantity: 6 },
-                    { name: 'Tag Tempero Baiano', quantity: 6 },
-                    { name: 'Tag Tempero do Chefe', quantity: 6 },
-                    { name: 'Tag Tempero Gaúcho', quantity: 6 },
-                    { name: 'Tag Tempero para Grelhados', quantity: 6 },
-                    { name: 'Tag Tempero à Portuguesa', quantity: 6 },
-                    { name: 'Tag Tempero à Portuguesa Picante', quantity: 6 },
-                    { name: 'Tag Tomilho', quantity: 6 },
-                    { name: 'Tag Vinagrete', quantity: 6 }
+                            { name: 'Tag Açafrão', quantity: 6 },
+                            { name: 'Tag Adobo', quantity: 6 },
+                            { name: 'Tag Vinagrete', quantity: 6 }
                         ]
                     },
                     addedItems: []
                 };
             },
-        computed: {
+            computed: {
                 addedItemsByCategory() {
                     const categorizedItems = {
                         Naturais: [],
@@ -408,15 +278,25 @@
                 enviarPorEmail() {
                     const itemsData = {
                         items: this.addedItems,
-                        observation: this.observation.trim() // Remove espaços em branco extras
+                        observation: document.getElementById('observationText').value.trim()
                     };
 
-                    // Salvar os itens e a observação no localStorage
-                    localStorage.setItem('addedItems', JSON.stringify(this.addedItems));
-                    localStorage.setItem('observation', itemsData.observation);
-
-                    // Redirecionar para itensadd.html
-                    window.location.href = 'itensadd.html';
+                    fetch('https://lista-lake.vercel.app/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(itemsData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro ao enviar os dados.');
+                        }
+                        window.location.href = 'itensadd.html';
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error.message);
+                    });
                 }
             }
         });
