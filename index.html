@@ -43,18 +43,6 @@
         li span:first-child {
             flex: 1;
         }
-        .send-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .send-btn:hover {
-            background-color: #218838;
-        }
     </style>
 </head>
 <body>
@@ -86,30 +74,22 @@
             el: '#addedItemsList',
             data() {
                 return {
-                    addedItemsByCategory: {
-                        Naturais: [
-                            { name: 'Açucar Mascavo 500g', quantity: 1 },
-                            { name: 'Anéis de Frutas 120g', quantity: 2 },
-                            { name: 'Bicarbonato de Sódio 90g', quantity: 3 }
-                        ],
-                        Molhos: [
-                            { name: 'Molho de Alho 150ml', quantity: 1 },
-                            { name: 'Molho de Alho 900ml', quantity: 2 },
-                            { name: 'Molho de Pimenta Defumada 150ml', quantity: 3 }
-                        ],
-                        Sais: [
-                            { name: 'Sal Marinho 1kg', quantity: 1 },
-                            { name: 'Sal Completo sem Pimenta 500g', quantity: 2 },
-                            { name: 'Parrilla Tradicional 600g', quantity: 3 }
-                        ],
-                        Tags: [
-                            { name: 'Tag Açafrão', quantity: 6 },
-                            { name: 'Tag Adobo', quantity: 6 },
-                            { name: 'Tag Vinagrete', quantity: 6 }
-                        ]
-                    },
-                    observation: 'Observação de teste' // Exemplo de observação preenchida
+                    addedItemsByCategory: {}, // Inicialmente vazio, será preenchido com os itens adicionados
+                    observation: '' // Inicialmente vazio, será preenchido com a observação
                 };
+            },
+            created() {
+                // Carregar itens adicionados do localStorage
+                const storedItems = localStorage.getItem('addedItems');
+                if (storedItems) {
+                    this.addedItemsByCategory = JSON.parse(storedItems);
+                }
+
+                // Carregar observação do localStorage
+                const storedObservation = localStorage.getItem('observation');
+                if (storedObservation) {
+                    this.observation = storedObservation;
+                }
             },
             methods: {
                 enviarERedirecionar() {
