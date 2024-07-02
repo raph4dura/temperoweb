@@ -2,15 +2,95 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Itens Adicionados</title>
+    <title>Lista de Itens</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <style>
-        /* Estilos adicionais conforme necessário */
+        /* Reset and base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #000;
             color: #fff;
             padding: 20px;
         }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #000;
+            padding: 20px;
+            border: 1px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .list, .added-items {
+            width: 48%;
+        }
+
+        .foods-list h2, .added-items h2 {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li:hover {
+            background-color: #444;
+        }
+
+        .add-btn, .control-btn {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-btn:hover, .control-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .quantity-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .list, .added-items {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Observation Box */
         .observation-box {
             margin-top: 20px;
             padding: 10px;
@@ -18,84 +98,209 @@
             border-radius: 4px;
             background-color: #222;
         }
-        .observation-box h3 {
-            margin-bottom: 10px;
-        }
-        .observation-box p {
+
+        .observation-box textarea {
+            width: 100%;
+            height: 100px;
+            resize: vertical;
+            padding: 8px;
+            font-size: 14px;
             color: #fff;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        h3 {
-            margin-top: 20px;
-        }
-        li {
-            margin-bottom: 8px;
-            padding: 10px;
-            border-radius: 4px;
             background-color: #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border: 1px solid #555;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         }
-        li span:first-child {
-            flex: 1;
+
+        .send-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .send-btn:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
-    <h2>Itens Adicionados</h2>
-    <div id="addedItemsList">
-        <ul>
-            <!-- Aqui você pode exibir os itens adicionados -->
-            <template v-for="(items, category) in addedItemsByCategory" :key="category">
+    <div id="app" class="container">
+        <div class="list">
+            <h2>Lista de Itens</h2>
+            <div v-for="(items, category) in foodCategories" :key="category">
                 <h3>{{ category }}</h3>
-                <li v-for="item in items" :key="item.name">
-                    <span>{{ item.name }}: {{ item.quantity }}</span>
-                </li>
-            </template>
-        </ul>
+                <ul>
+                    <li v-for="item in items" :key="item.name">
+                        <span>{{ item.name }}</span>
+                        <button class="add-btn" @click="addItem(item, category)">Adicionar</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="added-items" ref="addedItemsContainer">
+            <h2>Itens Adicionados</h2>
+            <div v-for="(items, category) in addedItemsByCategory" :key="category">
+                <h3>{{ category }}</h3>
+                <ul>
+                    <li v-for="item in items" :key="item.name" :id="`added-item-${item.name}`">
+                        <span>{{ item.name }}: {{ item.quantity }}</span>
+                        <div class="quantity-controls">
+                            <button class="control-btn" @click="adjustQuantity(item, category, -6)">-6</button>
+                            <button class="control-btn" @click="adjustQuantity(item, category, -1)">-1</button>
+                            <button class="control-btn" @click="adjustQuantity(item, category, 1)">+1</button>
+                            <button class="control-btn" @click="adjustQuantity(item, category, 6)">+6</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Observations Box -->
+            <div class="observation-box">
+                <textarea id="observationText" placeholder="Observações adicionais..." rows="4"></textarea>
+                <button class="send-btn" @click="enviarPorEmail">Enviar Itens</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Exibir a observação -->
-    <div class="observation-box">
-        <h3>Observação:</h3>
-        <p>{{ observation }}</p>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script>
         new Vue({
-            el: '#addedItemsList',
+            el: '#app',
             data() {
                 return {
-                    addedItemsByCategory: {}, // Inicialmente vazio, será preenchido com os itens adicionados
-                    observation: '' // Inicialmente vazio, será preenchido com a observação
+                    foodCategories: {
+                        Naturais: [
+                            { name: 'Açucar Mascavo 500g' },
+                            { name: 'Anéis de Frutas 120g' },
+                            { name: 'Bicarbonato de Sódio 90g' }
+                        ],
+                        Molhos: [
+                            { name: 'Molho de Alho 150ml' },
+                            { name: 'Molho de Alho 900ml' },
+                            { name: 'Molho de Pimenta Defumada 150ml' }
+                        ],
+                        Sais: [
+                            { name: 'Sal Marinho 1kg' },
+                            { name: 'Sal Completo sem Pimenta 500g' },
+                            { name: 'Parrilla Tradicional 600g' }
+                        ],
+                        Tags: [
+                            { name: 'Tag Açafrão', quantity: 6 },
+                            { name: 'Tag Adobo', quantity: 6 },
+                            { name: 'Tag Vinagrete', quantity: 6 }
+                        ]
+                    },
+                    addedItems: []
                 };
             },
-            created() {
-                // Obter itens adicionados do localStorage
-                const storedItems = localStorage.getItem('addedItems');
-                if (storedItems) {
-                    this.addedItemsByCategory = JSON.parse(storedItems)
-                        .reduce((acc, item) => {
-                            if (!acc[item.category]) {
-                                acc[item.category] = [];
-                            }
-                            acc[item.category].push(item);
-                            return acc;
-                        }, {});
-                }
+            computed: {
+                addedItemsByCategory() {
+                    const categorizedItems = {
+                        Naturais: [],
+                        Molhos: [],
+                        Sais: [],
+                        Tags: []
+                    };
 
-                // Obter a observação do localStorage
-                const storedObservation = localStorage.getItem('observation');
-                if (storedObservation) {
-                    this.observation = storedObservation;
+                    this.addedItems.forEach(item => {
+                        if (categorizedItems[item.category]) {
+                            categorizedItems[item.category].push(item);
+                        }
+                    });
+
+                    // Ordenar os itens dentro de cada categoria por nome
+                    Object.keys(categorizedItems).forEach(category => {
+                        categorizedItems[category].sort((a, b) => a.name.localeCompare(b.name));
+                    });
+
+                    return categorizedItems;
+                }
+            },
+            methods: {
+                addItem(item, category) {
+                    const existingItem = this.addedItems.find(
+                        added => added.name === item.name && added.category === category
+                    );
+
+                    if (existingItem) {
+                        // Se o item já existe, rolar até ele
+                        this.$nextTick(() => {
+                            const listItem = document.getElementById(`added-item-${existingItem.name}`);
+                            if (listItem) {
+                                listItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        });
+                    } else {
+                        let initialQuantity = 1;
+                        if (category === 'Tags') {
+                            initialQuantity = 6;
+                        }
+                        const newItem = { name: item.name, category, quantity: initialQuantity };
+
+                        this.addedItems.push(newItem);
+
+                        // Ordenar os itens adicionados por categoria e nome
+                        this.addedItems.sort((a, b) => {
+                            if (a.category === b.category) {
+                                return a.name.localeCompare(b.name);
+                            }
+                            return a.category.localeCompare(b.category);
+                        });
+
+                        this.$nextTick(() => {
+                            const newItemElement = this.$refs.addedItemsContainer;
+                            newItemElement.scrollTop = newItemElement.scrollHeight;
+                        });
+                    }
+                },
+                adjustQuantity(item, category, change) {
+                    const addedItem = this.addedItems.find(
+                        added => added.name === item.name && added.category === category
+                    );
+
+                    if (addedItem) {
+                        addedItem.quantity += change;
+                        if (addedItem.quantity < 1) {
+                            this.deleteItem(addedItem);
+                        }
+                    }
+                },
+                deleteItem(item) {
+                    const index = this.addedItems.indexOf(item);
+                    if (index !== -1) {
+                        this.addedItems.splice(index, 1);
+                    }
+                },
+                enviarPorEmail() {
+                    const itemsData = {
+                        items: this.addedItems,
+                        observation: document.getElementById('observationText').value.trim()
+                    };
+
+                    fetch('https://lista-lake.vercel.app/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(itemsData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro ao enviar os dados.');
+                        }
+                        window.location.href = 'itensadd.html';
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error.message);
+                    });
                 }
             }
         });
     </script>
 </body>
 </html>
+
