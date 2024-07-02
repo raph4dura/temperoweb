@@ -327,7 +327,7 @@
                     addedItems: []
                 };
             },
-            computed: {
+        computed: {
                 addedItemsByCategory() {
                     const categorizedItems = {
                         Naturais: [],
@@ -339,8 +339,12 @@
                     this.addedItems.forEach(item => {
                         if (categorizedItems[item.category]) {
                             categorizedItems[item.category].push(item);
-                            categorizedItems[item.category].sort((a, b) => a.name.localeCompare(b.name));
                         }
+                    });
+
+                    // Ordenar os itens dentro de cada categoria por nome
+                    Object.keys(categorizedItems).forEach(category => {
+                        categorizedItems[category].sort((a, b) => a.name.localeCompare(b.name));
                     });
 
                     return categorizedItems;
@@ -369,6 +373,7 @@
 
                         this.addedItems.push(newItem);
 
+                        // Ordenar os itens adicionados por categoria e nome
                         this.addedItems.sort((a, b) => {
                             if (a.category === b.category) {
                                 return a.name.localeCompare(b.name);
@@ -377,7 +382,7 @@
                         });
 
                         this.$nextTick(() => {
-                            const newItemElement = this.$refs.addedItems;
+                            const newItemElement = this.$refs.addedItemsContainer;
                             newItemElement.scrollTop = newItemElement.scrollHeight;
                         });
                     }
@@ -401,26 +406,17 @@
                     }
                 },
                 enviarPorEmail() {
-                    const observation = document.getElementById('observationText').value.trim();
+                    const itemsData = {
+                        items: this.addedItems,
+                        observation: this.observation.trim() // Remove espaços em branco extras
+                    };
 
-                    let emailContent = '';
-                    Object.keys(this.addedItemsByCategory).forEach(category => {
-                        if (this.addedItemsByCategory[category].length > 0) {
-                            emailContent += `${category}:\n`;
-                            this.addedItemsByCategory[category].forEach(item => {
-                                emailContent += `${item.name}: ${item.quantity}\n`;
-                            });
-                        }
-                    });
+                    // Salvar os itens e a observação no localStorage
+                    localStorage.setItem('addedItems', JSON.stringify(this.addedItems));
+                    localStorage.setItem('observation', itemsData.observation);
 
-                    if (observation !== '') {
-                        emailContent += `\nObservação:\n${observation}`;
-                    }
-
-                    document.getElementById('emailContent').value = emailContent;
-                    document.getElementById('observation').value = observation;
-
-                    document.getElementById('emailForm').submit();
+                    // Redirecionar para itensadd.html
+                    window.location.href = 'itensadd.html';
                 }
             }
         });
