@@ -88,8 +88,17 @@
                 width: 100%;
                 margin-bottom: 20px;
             }
-        }
+        
 
+             . added-items {
+            position: relative;
+            top: 0;
+            max-height: none;
+            overflow: visible;
+
+       }
+
+}
         /* Observation Box */
         .observation-box {
             margin-top: 20px;
@@ -126,10 +135,10 @@
             background-color: #218838;
         }
         .added-items {
-            position: relative;
-            top: 0;
-            max-height: none;
-            overflow: visible;
+            position: sticky;
+            top: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
     </style>
 </head>
