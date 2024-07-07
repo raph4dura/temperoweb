@@ -167,7 +167,7 @@
                             <button class="control-btn" @click="adjustQuantity(item, category, -6)">-6</button>
                             <button class="control-btn" @click="adjustQuantity(item, category, -1)">-1</button>
                             <button class="control-btn" @click="adjustQuantity(item, category, 1)">+1</button>
-                            <button class="control-btn" @click="adjustQuantity(item, category, 6)">+6</button>
+                            <button class="control-btn" @click="adjustQuantity(item, category, isSpecialItem(item) ? 10 : 6)">{{ isSpecialItem(item) ? '+10' : '+6' }}</button>
                         </div>
                     </li>
                 </ul>
@@ -314,7 +314,7 @@
                     { name: 'Sal para Churrasco sem Pimenta 1kg' },
                     { name: 'Sal para Churrasco com Pimenta 1kg' },
                     { name: 'Sal para Churrasco 500g' },
-                    { name: 'Sal para Galeto sem Pimenta 1kg' },
+                    { name: 'Sal para Galeto sem Pimenta 1kg' },                        
                     { name: 'Sal para Galeto sem Pimenta 500g' },
                     { name: 'Sal para Galeto com Pimenta 500g' },
                     { name: 'Tempero Alho e Sal 1,01kg' },
@@ -501,7 +501,20 @@
                         let initialQuantity = 1;
                         if (category === 'Tags' || category === 'Tags_Novos') {
                             initialQuantity = 6;
+                        } else if (category === 'Sais' && [
+                            'Sal Marinho 1kg',
+                            'Sal Completo sem Pimenta 500g',
+                            'Sal Completo com Pimenta 500g',
+                            'Sal para Churrasco sem Pimenta 1kg',
+                            'Sal para Churrasco com Pimenta 1kg',
+                            'Sal para Churrasco 500g',
+                            'Sal para Galeto sem Pimenta 1kg',
+                            'Sal para Galeto sem Pimenta 500g',
+                            'Sal para Galeto com Pimenta 500g'
+                        ].includes(item.name)) {
+                            initialQuantity = 10;
                         }
+
                         const newItem = { name: item.name, category, quantity: initialQuantity };
 
                         this.addedItems.push(newItem);
@@ -537,6 +550,20 @@
                     if (index !== -1) {
                         this.addedItems.splice(index, 1);
                     }
+                },
+                isSpecialItem(item) {
+                    const specialItems = [
+                        'Sal Marinho 1kg',
+                        'Sal Completo sem Pimenta 500g',
+                        'Sal Completo com Pimenta 500g',
+                        'Sal para Churrasco sem Pimenta 1kg',
+                        'Sal para Churrasco com Pimenta 1kg',
+                        'Sal para Churrasco 500g',
+                        'Sal para Galeto sem Pimenta 1kg',
+                        'Sal para Galeto sem Pimenta 500g',
+                        'Sal para Galeto com Pimenta 500g'
+                    ];
+                    return specialItems.includes(item.name);
                 },
                 async enviarPorEmail() {
                     // Formata os dados como texto simples
