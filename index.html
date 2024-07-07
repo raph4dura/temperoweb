@@ -88,17 +88,15 @@
                 width: 100%;
                 margin-bottom: 20px;
             }
-        
 
-             . added-items {
-            position: relative;
-            top: 0;
-            max-height: none;
-            overflow: visible;
+            .added-items {
+                position: relative;
+                top: 0;
+                max-height: none;
+                overflow: visible;
+            }
+        }
 
-       }
-
-}
         /* Observation Box */
         .observation-box {
             margin-top: 20px;
@@ -134,6 +132,7 @@
         .send-btn:hover {
             background-color: #218838;
         }
+        
         .added-items {
             position: sticky;
             top: 20px;
@@ -189,7 +188,7 @@
                 return {
                     foodCategories: {
                         Naturais: [
-                        { name: 'Açucar Mascavo 1kg' },
+                    { name: 'Açucar Mascavo 1kg' },
                     { name: 'Açucar Mascavo 500g' },
                     { name: 'Anéis de Frutas 120g' },
                     { name: 'Aveia em Flocos Finos 250g' },
@@ -279,8 +278,8 @@
                     { name: 'Bicarbonato de Sódio 500g' },
                     { name: 'Bicarbonato de Sódio 250g' },
                     { name: 'Bicarbonato de Sódio 90g' }
-                ],
-                Molhos: [
+                        ],
+                        Molhos: [
                     { name: 'Alho com Ervas Finas 190g pote' },
                     { name: 'Alho com Orégano 190g pote' },
                     { name: 'Alho, Cebola e Salsa 190g pote' },
@@ -291,6 +290,8 @@
                     { name: 'Alho, Salsa e Páprica 190g pote' },
                     { name: 'Molho de Alho 150ml' },
                     { name: 'Molho de Alho 900ml' },
+                    { name: 'Molho Caseiro para Frango 150ml' },
+                    { name: 'Molho Caseiro para Frango 900ml' },
                     { name: 'Molho de Alho com Chimichurri 150ml' },
                     { name: 'Molho de Alho com Chimichurri 900ml' },
                     { name: 'Molho de Alho, Cebola e Salsa 150ml' },
@@ -305,8 +306,8 @@
                     { name: 'Molho Shoyu 150ml' },
                     { name: 'Molho Shoyu 900ml' },
                     { name: 'Molho de Pimenta Defumada 150ml' }
-                ],
-                Sais: [
+                        ],
+                        Sais: [
                     { name: 'Sal Marinho 1kg' },
                     { name: 'Sal Completo sem Pimenta 500g' },
                     { name: 'Sal Completo com Pimenta 500g' },
@@ -329,10 +330,9 @@
                     { name: 'Parrilha Cordeiro 600g' },
                     { name: 'Parrilla Lemon Pepper 600g' },
                     { name: 'Parrilla Tradicional 600g' }
-                        
                         ],
                         Tags: [
-                        { name: 'Açafrão', quantity: 6 },
+                    { name: 'Açafrão', quantity: 6 },
                     { name: 'Adobo', quantity: 6 },
                     { name: 'Alecrim', quantity: 6 },
                     { name: 'Alho, Cebola e Salsa', quantity: 6 },
@@ -353,7 +353,7 @@
                     { name: 'Chimichurri', quantity: 6 },
                     { name: 'Chimichurri Defumado', quantity: 6 },
                     { name: 'Chimichurri sem Pimenta', quantity: 6 },
-                    { name: 'Coentro em Pó', quantity: 6 },
+                    { name: 'Coentro', quantity: 6 },
                     { name: 'Cominho em Pó', quantity: 6 },
                     { name: 'Cominho em Grão', quantity: 6 }, 
                     { name: 'Composto para Chimarrão', quantity: 6 },
@@ -400,10 +400,12 @@
                     { name: 'Tomilho', quantity: 6 },
                     { name: 'Vinagrete', quantity: 6 },
                     { name: 'Camomila 50g', quantity: 6 },
-                    { name: 'Composto p/ Chimarrão 50g', quantity: 6 }
+                    { name: 'Composto p/ Chimarrão 50g', quantity: 6 },
+                    { name: 'Adobo 50g', quantity: 6},
+                    { name: 'Alho, Cebola e Salsa 50g', quantity: 6},
+                    { name: 'Chimichurri 50g', quantity: 6}
                         ],
-                       
-                     Tags_Novos: [
+                        Tags_Novos: [
                     { name: 'Tag Açafrão', quantity: 6 },
                     { name: 'Tag Adobo', quantity: 6 },
                     { name: 'Tag Alecrim', quantity: 6 },
@@ -445,13 +447,13 @@
                     { name: 'Tag Tempera Tudo', quantity: 6 },
                     { name: 'Tag Tempero Baiano', quantity: 6 },
                     { name: 'Tag Tempero do Chefe', quantity: 6 },
+                    { name: 'Tag Tempero Feijão Mágico', quantity: 6},
                     { name: 'Tag Tempero Gaúcho', quantity: 6 },
                     { name: 'Tag Tempero para Grelhados', quantity: 6 },
                     { name: 'Tag Tempero à Portuguesa', quantity: 6 },
                     { name: 'Tag Tempero à Portuguesa Picante', quantity: 6 },
-                    { name: 'Tag Tomilho', quantity: 6 }    
+                    { name: 'Tag Tomilho', quantity: 6 }
                         ]
-                    
                     },
                     addedItems: [],
                     observation: '' // Inicializa a observação como uma string vazia
@@ -497,9 +499,8 @@
                         });
                     } else {
                         let initialQuantity = 1;
-                        if (category === 'Tags') {
+                        if (category === 'Tags' || category === 'Tags_Novos') {
                             initialQuantity = 6;
-
                         }
                         const newItem = { name: item.name, category, quantity: initialQuantity };
 
